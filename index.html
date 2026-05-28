@@ -2670,6 +2670,11 @@ function resetData(){
    FIRST-RUN GUIDE
    Shown on Dashboard + Visions page when workspace is empty
 ══════════════════════════════════════ */
+function frgGoToStep(step){
+  if(step === 1){ showPage('visions'); setTimeout(() => document.getElementById('vTitle')?.focus(), 100); }
+  if(step === 2){ showPage('visions'); setTimeout(() => document.getElementById('pTitle')?.focus(), 100); }
+  if(step === 3){ openTaskModal(); }
+}
 function renderFirstRunGuide(containerId){
   const el = document.getElementById(containerId);
   if(!el) return;
@@ -2683,15 +2688,15 @@ function renderFirstRunGuide(containerId){
       <div class="frg-title">👋 Welcome! Let's set up your workspace</div>
       <div class="frg-sub">Complete these 3 steps to get started — takes under 2 minutes.</div>
       <div class="frg-steps">
-        <div class="frg-step ${hasGoals?'done':''}" onclick="${hasGoals?'':\"document.getElementById('vTitle').focus()\"}">
+        <div class="frg-step ${hasGoals?'done':''}" onclick="${hasGoals?'':'frgGoToStep(1)'}">
           <div class="frg-num">${hasGoals?'✓':'1'}</div>
           <span>Create your 1st Goal</span>
         </div>
-        <div class="frg-step ${hasProjects?'done':''}" onclick="${hasProjects||!hasGoals?'':\"document.getElementById('pTitle').focus()\"}">
+        <div class="frg-step ${hasProjects?'done':''}" onclick="${hasProjects||!hasGoals?'':'frgGoToStep(2)'}">
           <div class="frg-num">${hasProjects?'✓':'2'}</div>
           <span>Create your 1st Project</span>
         </div>
-        <div class="frg-step ${hasTasks?'done':''}" onclick="${hasTasks||!hasProjects?'':\"openTaskModal()\"}">
+        <div class="frg-step ${hasTasks?'done':''}" onclick="${hasTasks||!hasProjects?'':'frgGoToStep(3)'}">
           <div class="frg-num">${hasTasks?'✓':'3'}</div>
           <span>Create your 1st Task</span>
         </div>
