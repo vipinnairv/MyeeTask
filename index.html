@@ -11,6 +11,7 @@
 <meta name="apple-mobile-web-app-title" content="TaskManager Pro">
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;600;700;800;900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
+<script src="https://cdn.sheetjs.com/xlsx-latest/package/dist/xlsx.full.min.js"></script>
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 :root{
@@ -395,6 +396,50 @@ body{font-family:var(--ffb);background:var(--bg);color:var(--text);min-height:10
 .notif-dot{position:absolute;top:2px;right:2px;width:7px;height:7px;background:#EF4444;border-radius:50%;border:1.5px solid transparent;display:none}
 .notif-dot.show{display:block}
 
+/* ── FIRST-RUN GUIDE ── */
+.frg-wrap{background:var(--pg);border-radius:var(--rx);padding:28px 32px;margin-bottom:24px;color:#fff;position:relative;overflow:hidden}
+.frg-wrap::after{content:'';position:absolute;top:-30px;right:-30px;width:120px;height:120px;background:rgba(255,255,255,.08);border-radius:50%}
+.frg-title{font-family:var(--ffd);font-size:1.25rem;font-weight:800;margin-bottom:6px}
+.frg-sub{font-size:.82rem;opacity:.85;margin-bottom:18px}
+.frg-steps{display:flex;gap:10px;flex-wrap:wrap}
+.frg-step{display:flex;align-items:center;gap:8px;background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.25);border-radius:var(--r);padding:8px 13px;cursor:pointer;transition:var(--dur);font-size:.82rem;font-weight:600}
+.frg-step:hover{background:rgba(255,255,255,.28)}
+.frg-step.done{background:rgba(16,185,129,.3);border-color:rgba(16,185,129,.5)}
+.frg-step .frg-num{width:22px;height:22px;border-radius:50%;background:rgba(255,255,255,.25);display:flex;align-items:center;justify-content:center;font-size:.72rem;font-weight:800;flex-shrink:0}
+.frg-step.done .frg-num{background:#10B981}
+/* ── MY TASKS PAGE ── */
+.mytask-sec{margin-bottom:24px}
+.mytask-sec-title{font-family:var(--ffd);font-size:.92rem;font-weight:800;color:var(--text);margin-bottom:12px;display:flex;align-items:center;gap:7px}
+.mytask-sec-title .cnt{background:var(--pg);color:#fff;border-radius:99px;padding:1px 8px;font-size:.72rem;font-weight:800}
+.mt-card{background:var(--surf);border:1px solid var(--bd);border-radius:var(--rl);padding:14px 16px;margin-bottom:9px;display:flex;align-items:flex-start;gap:12px;transition:var(--dur)}
+.mt-card:hover{box-shadow:var(--sh);transform:translateY(-1px)}
+.mt-left{flex:1;min-width:0}
+.mt-title{font-weight:700;font-size:.88rem;margin-bottom:5px;color:var(--text)}
+.mt-meta{display:flex;flex-wrap:wrap;gap:5px;align-items:center;font-size:.75rem;color:var(--muted)}
+.mt-right{display:flex;align-items:center;gap:7px;flex-shrink:0}
+.mt-assigner{font-size:.71rem;color:var(--muted);font-style:italic;margin-top:4px}
+/* ── NOTIFICATIONS PAGE ── */
+.notif-card{background:var(--surf);border:1px solid var(--bd);border-left:4px solid var(--p);border-radius:var(--rl);padding:14px 16px;margin-bottom:9px;transition:var(--dur)}
+.notif-card.unread{border-left-color:#EF4444;background:rgba(239,68,68,.03)}
+.notif-card.info{border-left-color:#3B82F6}
+.notif-card.success{border-left-color:#10B981}
+.notif-card-title{font-weight:700;font-size:.87rem;color:var(--text);margin-bottom:3px}
+.notif-card-sub{font-size:.77rem;color:var(--muted);margin-bottom:8px}
+.notif-card-ts{font-size:.69rem;color:var(--lt)}
+.notif-empty{text-align:center;padding:40px 20px;color:var(--muted)}
+.notif-empty-ic{font-size:2.5rem;margin-bottom:10px}
+/* ── COMMENTS ── */
+.cmt-wrap{margin-top:16px;border-top:1px solid var(--bd);padding-top:14px}
+.cmt-title{font-size:.79rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:10px}
+.cmt-item{display:flex;gap:9px;margin-bottom:11px}
+.cmt-av{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.65rem;font-weight:800;color:#fff;flex-shrink:0;background:var(--pg)}
+.cmt-body{flex:1;background:var(--surf2);border:1px solid var(--bd);border-radius:var(--r);padding:8px 11px}
+.cmt-author{font-size:.74rem;font-weight:700;color:var(--text)}
+.cmt-ts{font-size:.66rem;color:var(--lt);margin-left:6px}
+.cmt-text{font-size:.81rem;color:var(--text);margin-top:3px;line-height:1.5}
+.cmt-input-row{display:flex;gap:8px;margin-top:8px}
+.cmt-input-row textarea{flex:1;resize:none;border:1.5px solid var(--bd);border-radius:var(--r);padding:8px 10px;font-family:var(--ffb);font-size:.81rem;background:var(--surf);color:var(--text);outline:none;transition:var(--dur)}
+.cmt-input-row textarea:focus{border-color:var(--p)}
 /* ── ONBOARDING ── */
 .mode-card{border:2px solid var(--bd);border-radius:var(--rx);padding:20px;text-align:center;cursor:pointer;transition:var(--dur);background:var(--surf2)}
 .mode-card:hover{border-color:var(--p);background:rgba(91,110,245,.06);transform:translateY(-2px);box-shadow:var(--sh)}
@@ -545,13 +590,15 @@ body{font-family:var(--ffb);background:var(--bg);color:var(--text);min-height:10
   <!-- SIDEBAR -->
   <aside class="sdb">
     <div class="sdb-lbl">Navigation</div>
-    <button class="nbtn act" data-page="dashboard"  onclick="showPage('dashboard')"><span class="nic">🏠</span>Dashboard</button>
-    <button class="nbtn"     data-page="myday"      onclick="showPage('myday')"><span class="nic">⭐</span>My Day</button>
-    <button class="nbtn"     data-page="profile"     onclick="showPage('profile')"><span class="nic">👤</span>My Profile</button>
-    <button class="nbtn"     data-page="visions"    onclick="showPage('visions')"><span class="nic">🎯</span>Goals & Projects</button>
-    <button class="nbtn"     data-page="tasks"      onclick="showPage('tasks')"><span class="nic">📋</span>Task Activity</button>
-    <button class="nbtn"     data-page="calendar"   onclick="showPage('calendar')"><span class="nic">📅</span>Due Date Calendar</button>
-    <button class="nbtn"     data-page="settings"   onclick="showPage('settings')"><span class="nic">⚙️</span>Data Management</button>
+    <button class="nbtn act" data-page="dashboard"      onclick="showPage('dashboard')"><span class="nic">🏠</span>Dashboard</button>
+    <button class="nbtn"     data-page="myday"          onclick="showPage('myday')"><span class="nic">⭐</span>My Day</button>
+    <button class="nbtn"     data-page="mytasks"        onclick="showPage('mytasks')"><span class="nic">📌</span>My Tasks</button>
+    <button class="nbtn"     data-page="notifications"  onclick="showPage('notifications')" id="notif-nav-btn"><span class="nic">🔔</span>Notifications<span id="notif-count-badge" style="display:none;background:#EF4444;color:#fff;border-radius:99px;padding:0 6px;font-size:.67rem;font-weight:800;margin-left:4px">0</span></button>
+    <button class="nbtn"     data-page="profile"        onclick="showPage('profile')"><span class="nic">👤</span>My Profile</button>
+    <button class="nbtn"     data-page="visions"        onclick="showPage('visions')"><span class="nic">🎯</span>Goals & Projects</button>
+    <button class="nbtn"     data-page="tasks"          onclick="showPage('tasks')"><span class="nic">📋</span>Task Activity</button>
+    <button class="nbtn"     data-page="calendar"       onclick="showPage('calendar')"><span class="nic">📅</span>Due Date Calendar</button>
+    <button class="nbtn"     data-page="settings"       onclick="showPage('settings')"><span class="nic">⚙️</span>Data Management</button>
     <button class="nbtn" id="admin-nav-btn" data-page="admin" onclick="showPage('admin')"><span class="nic">🛡️</span>Admin Console</button>
     <div class="qadd" onclick="openTaskModal()">✨ Quick Add Task</div>
     <!-- User Switcher (Company Mode) -->
@@ -633,6 +680,8 @@ body{font-family:var(--ffb);background:var(--bg);color:var(--text);min-height:10
     <!-- VISIONS -->
     <div id="page-visions" class="page">
       <div class="ph"><div><div class="ph-t">🎯 Goals & Projects</div><div class="ph-s">Define your goals with a time budget, then break them into projects that auto-balance</div></div></div>
+      <!-- First-run guide — auto-hidden once all 3 items exist -->
+      <div id="frg-visions"></div>
       <div class="visgrd">
         <div class="ccd">
           <div class="ct">🌟 1. Goals</div>
@@ -710,6 +759,24 @@ body{font-family:var(--ffb);background:var(--bg);color:var(--text);min-height:10
       </div>
     </div>
 
+    <!-- MY TASKS -->
+    <div id="page-mytasks" class="page">
+      <div class="ph">
+        <div><div class="ph-t">📌 My Tasks</div><div class="ph-s">Tasks assigned to you or self-assigned</div></div>
+        <div class="ph-r"><button class="btn bp" onclick="openTaskModal()">✨ Add Task</button></div>
+      </div>
+      <div id="mytasks-body"></div>
+    </div>
+
+    <!-- NOTIFICATIONS -->
+    <div id="page-notifications" class="page">
+      <div class="ph">
+        <div><div class="ph-t">🔔 Notifications</div><div class="ph-s">Task assignments, progress updates, and comments</div></div>
+        <div class="ph-r"><button class="btn bo bsm" onclick="markAllNotifRead()">✓ Mark All Read</button></div>
+      </div>
+      <div id="notifications-body"></div>
+    </div>
+
     <!-- CALENDAR -->
     <div id="page-calendar" class="page">
       <div class="ph">
@@ -751,6 +818,11 @@ body{font-family:var(--ffb);background:var(--bg);color:var(--text);min-height:10
           <h3>📤 Export to Calendar (.ics)</h3>
           <p>One file with every dated task as an event. Import into Google Calendar, Outlook, Apple Calendar — works anywhere.</p>
           <button class="btn bp" onclick="exportICS()">⬇️ Download .ics</button>
+        </div>
+        <div class="scd">
+          <h3>📊 Export to Excel (.xlsx)</h3>
+          <p>Full data dump — Goals, Projects, Tasks, Comments. All fields included: assignee, progress, deadline with time, tags, hours.</p>
+          <button class="btn bp" onclick="exportToExcel()">📥 Download Excel</button>
         </div>
         <div class="scd" style="grid-column:1/-1">
           <h3>🔗 Google Calendar Sync (OAuth)</h3>
@@ -1023,7 +1095,7 @@ body{font-family:var(--ffb);background:var(--bg);color:var(--text);min-height:10
       </div>
       <div class="fr">
         <div class="fg"><label class="fl">Start Date</label><input type="date" id="t-start" class="fc"></div>
-        <div class="fg"><label class="fl">Due Date</label><input type="date" id="t-deadline" class="fc"></div>
+        <div class="fg"><label class="fl">Due Date &amp; Time</label><input type="datetime-local" id="t-deadline" class="fc"></div>
       </div>
       <div class="fr">
         <div class="fg"><label class="fl">Est Hours</label><input type="number" id="t-est" class="fc" min="0" step="0.5" placeholder="0"></div>
@@ -1040,7 +1112,11 @@ body{font-family:var(--ffb);background:var(--bg);color:var(--text);min-height:10
         </div>
         <div class="fg"><label class="fl">Blocked By (task ID)</label><input id="t-blocked" class="fc" placeholder="Task IDs comma-separated"></div>
       </div>
-      <div class="fg" id="t-assignto-wrap"><label class="fl">Assign To</label>
+      <div class="fg" id="t-assignto-wrap">
+        <label class="fl" style="display:flex;align-items:center;justify-content:space-between">
+          <span>Assign To</span>
+          <button type="button" class="btn bp bsm" style="padding:3px 9px!important;font-size:.71rem!important" onclick="selfAssignTask()" title="Assign to yourself">🙋 Self Assign</button>
+        </label>
         <select id="t-assignedto" class="fc"><option value="">— Unassigned —</option></select>
       </div>
       <div class="fg"><label class="fl">Tags <span style="color:var(--lt);font-weight:500;text-transform:none">(type + Enter)</span></label>
@@ -1131,6 +1207,15 @@ body{font-family:var(--ffb);background:var(--bg);color:var(--text);min-height:10
         <div class="subt-add">
           <input id="vm-subt-input" placeholder="Add a subtask + Enter…">
           <button class="btn bp bsm" onclick="addSubtask()">+ Add</button>
+        </div>
+      </div>
+      <!-- COMMENTS SECTION -->
+      <div class="cmt-wrap">
+        <div class="cmt-title">💬 Comments &amp; Notes</div>
+        <div id="vm-comments-list"></div>
+        <div class="cmt-input-row">
+          <textarea id="vm-cmt-input" rows="2" placeholder="Add a comment, instruction, or note…"></textarea>
+          <button class="btn bp bsm" onclick="addTaskComment()" style="align-self:flex-end">Send</button>
         </div>
       </div>
     </div>
@@ -1341,22 +1426,8 @@ const S_CFG = {
   done:        {label:'Done',        cls:'bdn', cal:'#10B981'}
 };
 
-const SEED = {
-  visions:  [
-    {id:1,title:'Clear CA Final Exam',type:'Short Term',durationMode:'days',totalHours:240,targetDate:'',startDate:'2026-04-01',endDate:'2026-06-30'},
-    {id:2,title:'Career Upskilling (Tech)',type:'Long Term',durationMode:'hours',totalHours:120,targetDate:'',startDate:'2026-01-01',endDate:'2026-12-31'}
-  ],
-  projects: [
-    {id:1,visionId:1,title:'Revision Strategy',hoursAllocated:60,startDate:'2026-04-01',endDate:'2026-05-31'},
-    {id:2,visionId:2,title:'AI for Data Analytics',hoursAllocated:null,startDate:'2026-02-01',endDate:'2026-07-31'}
-  ],
-  tasks: [
-    {id:1,projectId:2,title:'Complete AI Module 1',     status:'in_progress',priority:'high',  startDate:'2026-04-20',deadline:'2026-04-28',notes:'<ul><li>Study Pandas</li><li>Complete exercises</li></ul>',estHours:4,actualHours:0,completedAt:null,subtasks:[],gcalEventId:null,tags:['deepwork'],recurrence:'none',blockedBy:[],timerStart:null,timerTotal:0},
-    {id:2,projectId:1,title:'Mock Test Paper',          status:'todo',       priority:'high',  startDate:'2026-04-25',deadline:'2026-04-30',notes:'<p>Strict 3-hour limit practice.</p>',estHours:3,actualHours:0,completedAt:null,subtasks:[],gcalEventId:null,tags:['exam'],recurrence:'weekly',blockedBy:[],timerStart:null,timerTotal:0},
-    {id:3,projectId:1,title:'Chapter Notes Review',    status:'review',     priority:'medium',startDate:'2026-04-15',deadline:'2026-04-27',notes:'<p>Focus on key chapters.</p>',estHours:2,actualHours:0,completedAt:null,subtasks:[],gcalEventId:null,tags:['revision'],recurrence:'none',blockedBy:[1],timerStart:null,timerTotal:0},
-    {id:4,projectId:2,title:'Python Basics Complete',  status:'done',       priority:'low',   startDate:'2026-04-01',deadline:'2026-04-10',notes:'<p>Completed successfully!</p>',estHours:5,actualHours:6,completedAt:'2026-04-10T12:00:00.000Z',subtasks:[],gcalEventId:null,tags:['coding'],recurrence:'none',blockedBy:[],timerStart:null,timerTotal:0}
-  ]
-};
+// Empty seed — new users are guided through creating their first Goal → Project → Task
+const SEED = { visions: [], projects: [], tasks: [] };
 
 /* ══════════════════════════════════════
    WORKSPACE / MULTI-USER
@@ -1430,6 +1501,9 @@ function migrateData(d){
     createdBy:   null,   // Firebase UID of task creator
     acceptedAt:  null,   // Timestamp when assigned user accepted the task
     startedAt:   null,   // Timestamp when task moved to in_progress
+    // ── Comments & notifications (added Round 7) ──
+    comments:    [],     // [{id, uid, name, initials, text, ts}]
+    readBy:      [],     // UIDs who have read/acknowledged this task notification
     ...t
   }));
   return d;
@@ -1437,7 +1511,16 @@ function migrateData(d){
 function save(){ localStorage.setItem(SK, JSON.stringify(D)); fbScheduleSync(); }
 function newId(){ return Date.now() + Math.floor(Math.random()*999); }
 function todayStr(){ return new Date().toISOString().split('T')[0]; }
-function fmtDate(s){ return s ? s.split('-').reverse().join('/') : ''; }
+function fmtDate(s){ return s ? s.split('T')[0].split('-').reverse().join('/') : ''; }
+// Extract YYYY-MM-DD from either "YYYY-MM-DD" or "YYYY-MM-DDTHH:mm" (datetime-local)
+function deadlineDate(s){ return s ? s.split('T')[0] : ''; }
+// Human-readable datetime — shows time only when a time component is present
+function fmtDateTime(s){
+  if(!s) return '';
+  const [datePart, timePart] = s.split('T');
+  const d = datePart.split('-').reverse().join('/');
+  return timePart ? `${d} ${timePart}` : d;
+}
 function esc(s){ const d=document.createElement('div');d.textContent=s||'';return d.innerHTML; }
 
 /* ══════════════════════════════════════
@@ -1482,7 +1565,9 @@ function showPage(id){
   renderCalendar();
   renderSettings();
   renderMyDay();
-  if(id === 'profile') renderProfilePage();
+  if(id === 'profile')       renderProfilePage();
+  if(id === 'mytasks')       renderMyTasks();
+  if(id === 'notifications') renderNotifications();
   if(id === 'admin'){
     renderAdmin();                          // immediate render from cached state
     if(WS_MODE === 'company') fbRefreshAdminData(); // async refresh from Firestore
@@ -1585,6 +1670,11 @@ function renderAll(){
   renderCalendar();
   renderSettings();
   renderMyDay();
+  renderMyTasks();
+  renderNotifications();
+  checkDueNotifications();
+  // First-run guide on visions page when data is empty
+  renderFirstRunGuide('frg-visions');
 }
 
 /* ══════════════════════════════════════
@@ -1594,8 +1684,8 @@ function renderDashboard(){
   const total   = D.tasks.length;
   const done    = D.tasks.filter(t => t.status === 'done').length;
   const today   = todayStr();
-  const overdue = D.tasks.filter(t => t.status !== 'done' && t.deadline && t.deadline < today).length;
-  const dueToday= D.tasks.filter(t => t.status !== 'done' && t.deadline === today).length;
+  const overdue = D.tasks.filter(t => t.status !== 'done' && t.deadline && deadlineDate(t.deadline) < today).length;
+  const dueToday= D.tasks.filter(t => t.status !== 'done' && t.deadline && deadlineDate(t.deadline) === today).length;
   const inProg  = D.tasks.filter(t => t.status === 'in_progress').length;
   const prog    = total ? Math.round((done/total)*100) : 0;
   // Today snapshot
@@ -1653,7 +1743,7 @@ function renderDashboard(){
       const pc = P_CFG[t.priority]||P_CFG.medium;
       const sc = S_CFG[t.status]||S_CFG.todo;
       const proj = D.projects.find(p => p.id == t.projectId);
-      const ovr  = t.deadline && t.deadline < today;
+      const ovr  = t.deadline && deadlineDate(t.deadline) < today;
       return `<div class="uprow">
         <div style="display:flex;align-items:center;gap:9px">
           <div style="width:7px;height:7px;border-radius:50%;background:${pc.dot};flex-shrink:0"></div>
@@ -1661,7 +1751,7 @@ function renderDashboard(){
         </div>
         <div style="display:flex;gap:5px;align-items:center;flex-wrap:wrap">
           <span class="bdg ${sc.cls}">${sc.label}</span>
-          ${t.deadline?`<span class="bdg ${ovr?'bh':'btd'}">${ovr?'⚠️ ':''}${fmtDate(t.deadline)}</span>`:''}
+          ${t.deadline?`<span class="bdg ${ovr?'bh':'btd'}">${ovr?'⚠️ ':''}${fmtDateTime(t.deadline)}</span>`:''}
         </div>
       </div>`;
     }).join('');
@@ -1818,6 +1908,8 @@ function delProject(id){
   });
 }
 function renderVisionsPage(){
+  // First-run guide (clears automatically once data exists)
+  renderFirstRunGuide('frg-visions');
   // Vision dropdown in project form
   const pVis = document.getElementById('pVision');
   if(pVis){
@@ -2007,7 +2099,7 @@ function buildTaskCard(t){
   const pc   = P_CFG[t.priority]  || P_CFG.medium;
   const sc   = S_CFG[t.status]    || S_CFG.todo;
   const proj = D.projects.find(p  => p.id == t.projectId);
-  const ovr  = t.status !== 'done' && t.deadline && t.deadline < todayStr();
+  const ovr  = t.status !== 'done' && t.deadline && deadlineDate(t.deadline) < todayStr();
   const isDn = t.status === 'done';
   const subTotal = (t.subtasks||[]).length;
   const subDone   = (t.subtasks||[]).filter(s=>s.done).length;
@@ -2015,6 +2107,7 @@ function buildTaskCard(t){
   const isBlocked = (t.blockedBy||[]).some(bid => { const bt=D.tasks.find(x=>x.id===bid); return bt && bt.status!=='done'; });
   const timerRunning = !!t.timerStart;
   const elapsed   = timerRunning ? fmtElapsed(Date.now() - t.timerStart + (t.timerTotal||0)*3600000) : '';
+  const cmtCount  = (t.comments||[]).length;
   return `<div class="tcd ${isDn?'done':''}">
     <div class="tbar" style="background:${pc.bar}"></div>
     <div class="tin">
@@ -2027,10 +2120,11 @@ function buildTaskCard(t){
       </div>
       <div class="tmeta">
         ${proj?`<span class="bdg btd">📁 ${esc(proj.title)}</span>`:''}
-        ${t.deadline?`<span class="bdg ${ovr?'bh':'btd'}">${ovr?'⚠️ ':''}${fmtDate(t.deadline)}</span>`:''}
+        ${t.deadline?`<span class="bdg ${ovr?'bh':'btd'}">${ovr?'⚠️ ':''}${fmtDateTime(t.deadline)}</span>`:''}
         <span class="bdg ${sc.cls}">${sc.label}</span>
         ${(+t.estHours||+t.actualHours)?`<span class="bdg bhr ${hourOver?'over':''}">⏱ ${(+t.actualHours||0)}/${(+t.estHours||0)}h</span>`:''}
         ${subTotal?`<span class="bdg btd">☑ ${subDone}/${subTotal}</span>`:''}
+        ${cmtCount?`<span class="bdg btd">💬 ${cmtCount}</span>`:''}
         ${(t.tags||[]).map(tg=>`<span class="tag">#${esc(tg)}</span>`).join('')}
         ${(()=>{
           if(!t.assignedTo || WS_MODE!=='company') return '';
@@ -2068,13 +2162,13 @@ function buildTaskCard(t){
 function buildKanbanCard(t){
   const pc   = P_CFG[t.priority] || P_CFG.medium;
   const proj = D.projects.find(p => p.id == t.projectId);
-  const ovr  = t.status !== 'done' && t.deadline && t.deadline < todayStr();
+  const ovr  = t.status !== 'done' && t.deadline && deadlineDate(t.deadline) < todayStr();
   return `<div class="kt" draggable="true" ondragstart="drag(event,${t.id})" onclick="viewNotes(${t.id})">
     <div class="ktbar" style="background:${pc.bar}"></div>
     <div class="ktt">${esc(t.title)}</div>
     <div class="ktm">
       <span style="display:flex;align-items:center;gap:3px"><span style="width:6px;height:6px;border-radius:50%;background:${pc.dot};display:inline-block"></span>${esc(proj?.title||'—')}</span>
-      ${t.deadline?`<span style="color:${ovr?'var(--err)':'inherit'}">${ovr?'⚠️ ':''}${fmtDate(t.deadline)}</span>`:''}
+      ${t.deadline?`<span style="color:${ovr?'var(--err)':'inherit'}">${ovr?'⚠️ ':''}${fmtDateTime(t.deadline)}</span>`:''}
     </div>
     <div style="margin-top:6px;display:flex;justify-content:flex-end" onclick="event.stopPropagation()">
       <button class="bic" style="font-size:.72rem;padding:4px 8px" onclick="openTaskModal(${t.id})">✏️</button>
@@ -2090,6 +2184,7 @@ function updateStatus(id, status){
   // Record when work actually starts
   if(status === 'in_progress' && !t.startedAt) t.startedAt = Date.now();
   save(); renderTasks(); renderDashboard(); renderMyDay(); renderVisionsPage();
+  renderMyTasks(); renderNotifications(); checkDueNotifications();
 }
 function toggleComplete(id){
   const t = D.tasks.find(x => x.id === id);
@@ -2169,27 +2264,38 @@ function openTaskModal(taskId=null, presetDate=null){
   const atWrap = document.getElementById('t-assignto-wrap');
 
   const populateAssignDropdown = (preserveVal) => {
-    const firestoreMembers = _wsMembers.filter(m => !m.isAdmin);
-    const localMembers     = (WS.users||[]).filter(u => !u.isAdmin);
-    if(WS_MODE !== 'company'){
-      atWrap.style.display = 'none';
+    // Show ALL members (admin can self-assign; non-admins can be assigned too)
+    const firestoreMembers = _wsMembers;
+    const localMembers     = (WS.users||[]);
+    const myUid = _fbUser?.uid || null;
+
+    if(WS_MODE === 'personal' || WS_MODE === null){
+      // Personal / no-workspace mode — still show Self Assign option
+      atWrap.style.display = '';
+      at.innerHTML = '<option value="">— Unassigned —</option>' +
+        (myUid ? `<option value="${myUid}">🙋 Me (Self)</option>` : '');
+      if(preserveVal != null) at.value = preserveVal;
       return;
     }
     if(firestoreMembers.length){
       atWrap.style.display = '';
       at.innerHTML = '<option value="">— Unassigned —</option>' +
-        firestoreMembers.map(m =>
-          `<option value="${m.uid}">${esc(m.name)} (${esc(m.position||m.role||'')})</option>`
-        ).join('');
+        firestoreMembers.map(m => {
+          const isSelf = m.uid === myUid;
+          return `<option value="${m.uid}">${isSelf ? '🙋 ' : ''}${esc(m.name)}${isSelf ? ' (Me)' : ''} — ${esc(m.position||m.role||'Member')}</option>`;
+        }).join('');
     } else if(localMembers.length){
-      // Fallback to localStorage WS.users if Firestore cache is empty
       atWrap.style.display = '';
       at.innerHTML = '<option value="">— Unassigned —</option>' +
-        localMembers.map(u =>
-          `<option value="${u.id}">${esc(u.name)} (${esc(u.role||'')})</option>`
-        ).join('');
+        localMembers.map(u => {
+          const isSelf = u.id === myUid || u.uid === myUid;
+          return `<option value="${u.id||u.uid}">${isSelf ? '🙋 ' : ''}${esc(u.name)}${isSelf ? ' (Me)' : ''} — ${esc(u.role||'Member')}</option>`;
+        }).join('');
     } else {
-      atWrap.style.display = 'none';
+      // Company mode but no members loaded yet — show just Self
+      atWrap.style.display = '';
+      at.innerHTML = '<option value="">— Unassigned —</option>' +
+        (myUid ? `<option value="${myUid}">🙋 Me (Self)</option>` : '');
     }
     // Restore any previously-selected assignee after rebuild
     if(preserveVal != null) at.value = preserveVal;
@@ -2338,17 +2444,65 @@ function viewNotes(id){
   document.getElementById('vm-badges').innerHTML =
     `<span class="bdg ${pc.cls}">● ${pc.label}</span>
      <span class="bdg ${sc.cls}">${sc.label}</span>
-     ${t.deadline?`<span class="bdg btd">📅 ${fmtDate(t.deadline)}</span>`:''}
+     ${t.deadline?`<span class="bdg btd">📅 ${fmtDateTime(t.deadline)}</span>`:''}
      ${(+t.estHours||+t.actualHours)?`<span class="bdg bhr">⏱ ${(+t.actualHours||0)}/${(+t.estHours||0)}h</span>`:''}`;
   document.getElementById('vm-content').innerHTML = t.notes
     ? `<div class="ql-editor" style="background:var(--surf2);border:1px solid var(--bd);border-radius:var(--r);min-height:70px;padding:12px 14px">${t.notes}</div>`
     : `<div class="emp" style="padding:22px"><div class="empi">📝</div><div class="empt">No Notes</div><div class="emps">Nothing stored for this task.</div></div>`;
   renderSubtasks();
+  renderComments();
   // GCal button only enabled if deadline exists
   const gb = document.getElementById('vm-gcal-btn');
   if(gb){ gb.disabled = !t.deadline; gb.style.opacity = t.deadline ? '1' : '.5'; }
   document.getElementById('view-modal').style.display = 'flex';
   setTimeout(()=>{ const i = document.getElementById('vm-subt-input'); if(i) i.focus(); }, 80);
+}
+function renderComments(){
+  const t = D.tasks.find(x => x.id === _viewingId);
+  if(!t) return;
+  const cmts = t.comments || [];
+  const el = document.getElementById('vm-comments-list');
+  if(!el) return;
+  if(!cmts.length){
+    el.innerHTML = '<div style="font-size:.77rem;color:var(--lt);font-style:italic;margin-bottom:6px">No comments yet — add one below.</div>';
+    return;
+  }
+  el.innerHTML = cmts.map(c => {
+    const bg = c.avatarColor || 'linear-gradient(135deg,#5B6EF5,#7C3AED)';
+    const dt = c.ts ? new Date(c.ts).toLocaleString('en-IN',{day:'2-digit',month:'short',hour:'2-digit',minute:'2-digit'}) : '';
+    return `<div class="cmt-item">
+      <div class="cmt-av" style="background:${bg}">${esc(c.initials||'?')}</div>
+      <div class="cmt-body">
+        <span class="cmt-author">${esc(c.name||'Unknown')}</span><span class="cmt-ts">${dt}</span>
+        <div class="cmt-text">${esc(c.text)}</div>
+      </div>
+    </div>`;
+  }).join('');
+}
+function addTaskComment(){
+  const t = D.tasks.find(x => x.id === _viewingId);
+  if(!t) return;
+  const inp = document.getElementById('vm-cmt-input');
+  const text = inp.value.trim();
+  if(!text) return;
+  // Get commenter info from current user
+  const me = _wsMembers.find(m => m.uid === _fbUser?.uid) || _fbProfile || {};
+  const name     = me.name     || WS_CUR_USER?.name     || 'You';
+  const initials = me.initials || WS_CUR_USER?.initials || name.slice(0,2).toUpperCase();
+  const avatarColor = me.avatarColor || 'linear-gradient(135deg,#5B6EF5,#7C3AED)';
+  (t.comments = t.comments||[]).push({
+    id: newId(),
+    uid: _fbUser?.uid || WS_CUR_USER?.id || null,
+    name, initials, avatarColor, text,
+    ts: Date.now()
+  });
+  inp.value = '';
+  save();
+  renderComments();
+  renderTasks();        // refresh comment badge count on task card
+  renderNotifications(); // update notifications page if open
+  checkDueNotifications();
+  toast('💬 Comment added', 'success');
 }
 function renderSubtasks(){
   const t = D.tasks.find(x => x.id === _viewingId);
@@ -2416,7 +2570,7 @@ function renderCalendar(){
   for(let d=1;d<=daysInMon;d++){
     const ds   = `${calYear}-${String(calMonth+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
     const isTd = ds === ts;
-    const dts  = D.tasks.filter(t => t.deadline === ds);
+    const dts  = D.tasks.filter(t => deadlineDate(t.deadline) === ds);
     const load = dts.reduce((s,t) => s + (+t.estHours||0), 0);
     const loadCls = load > 6 ? 'load-hi' : load > 3 ? 'load-md' : load > 0 ? 'load-lo' : '';
     const pills = dts.map(t => {
@@ -2507,7 +2661,356 @@ function importData(input){
 }
 function resetData(){
   D = JSON.parse(JSON.stringify({visions:[],projects:[],tasks:[]}));
-  save(); renderAll(); toast('App has been reset.','info');
+  save(); renderAll();
+  showPage('visions');     // take user straight to Goals page
+  toast('App has been reset. Create your first Goal to get started! 🎯','info');
+}
+
+/* ══════════════════════════════════════
+   FIRST-RUN GUIDE
+   Shown on Dashboard + Visions page when workspace is empty
+══════════════════════════════════════ */
+function renderFirstRunGuide(containerId){
+  const el = document.getElementById(containerId);
+  if(!el) return;
+  const hasGoals    = D.visions.length > 0;
+  const hasProjects = D.projects.length > 0;
+  const hasTasks    = D.tasks.length > 0;
+  if(hasGoals && hasProjects && hasTasks){ el.innerHTML = ''; return; }
+
+  el.innerHTML = `
+    <div class="frg-wrap">
+      <div class="frg-title">👋 Welcome! Let's set up your workspace</div>
+      <div class="frg-sub">Complete these 3 steps to get started — takes under 2 minutes.</div>
+      <div class="frg-steps">
+        <div class="frg-step ${hasGoals?'done':''}" onclick="${hasGoals?'':\"document.getElementById('vTitle').focus()\"}">
+          <div class="frg-num">${hasGoals?'✓':'1'}</div>
+          <span>Create your 1st Goal</span>
+        </div>
+        <div class="frg-step ${hasProjects?'done':''}" onclick="${hasProjects||!hasGoals?'':\"document.getElementById('pTitle').focus()\"}">
+          <div class="frg-num">${hasProjects?'✓':'2'}</div>
+          <span>Create your 1st Project</span>
+        </div>
+        <div class="frg-step ${hasTasks?'done':''}" onclick="${hasTasks||!hasProjects?'':\"openTaskModal()\"}">
+          <div class="frg-num">${hasTasks?'✓':'3'}</div>
+          <span>Create your 1st Task</span>
+        </div>
+      </div>
+    </div>`;
+}
+
+/* ══════════════════════════════════════
+   MY TASKS PAGE
+══════════════════════════════════════ */
+function renderMyTasks(){
+  const body = document.getElementById('mytasks-body');
+  if(!body) return;
+  const myUid = _fbUser?.uid || WS_CUR_USER?.uid || WS_CUR_USER?.id || null;
+
+  // Assigned TO me by someone else
+  const assignedToMe = D.tasks.filter(t =>
+    t.assignedTo && t.assignedTo === myUid && t.assignedBy !== myUid && t.status !== 'done'
+  );
+  // Self-assigned
+  const selfAssigned = D.tasks.filter(t =>
+    t.assignedTo && t.assignedTo === myUid && t.assignedBy === myUid && t.status !== 'done'
+  );
+  // Completed my tasks (done)
+  const completedMine = D.tasks.filter(t =>
+    t.assignedTo && t.assignedTo === myUid && t.status === 'done'
+  );
+
+  if(!myUid && !assignedToMe.length && !selfAssigned.length){
+    body.innerHTML = `<div class="notif-empty"><div class="notif-empty-ic">📌</div><div style="font-weight:700;font-size:.95rem">No tasks assigned yet</div><div style="font-size:.82rem;color:var(--lt);margin-top:5px">Tasks assigned to you or self-assigned will appear here.</div></div>`;
+    return;
+  }
+
+  const buildMtCard = (t) => {
+    const sc    = S_CFG[t.status] || S_CFG.todo;
+    const pc    = P_CFG[t.priority] || P_CFG.medium;
+    const proj  = D.projects.find(p => p.id == t.projectId);
+    const today = todayStr();
+    const ovr   = t.deadline && deadlineDate(t.deadline) < today;
+    const assigner = t.assignedBy && t.assignedBy !== myUid
+      ? (_wsMembers.find(m => m.uid === t.assignedBy) || (WS.users||[]).find(u => u.id === t.assignedBy || u.uid === t.assignedBy))
+      : null;
+    const cmtCnt = (t.comments||[]).length;
+    return `<div class="mt-card">
+      <div class="mt-left">
+        <div class="mt-title">${esc(t.title)}</div>
+        <div class="mt-meta">
+          <span class="bdg ${sc.cls}">${sc.label}</span>
+          <span class="bdg ${pc.cls}">● ${pc.label}</span>
+          ${proj?`<span class="bdg btd">📁 ${esc(proj.title)}</span>`:''}
+          ${t.deadline?`<span class="bdg ${ovr?'bh':'btd'}">${ovr?'⚠️ ':''}${fmtDateTime(t.deadline)}</span>`:''}
+          ${cmtCnt?`<span class="bdg btd">💬 ${cmtCnt}</span>`:''}
+        </div>
+        ${assigner?`<div class="mt-assigner">Assigned by ${esc(assigner.name)}</div>`:''}
+      </div>
+      <div class="mt-right">
+        <select class="tss" onchange="updateStatus(${t.id},this.value)">
+          ${Object.entries(S_CFG).map(([v,c])=>`<option value="${v}"${t.status===v?' selected':''}>${c.label}</option>`).join('')}
+        </select>
+        <button class="bic" onclick="viewNotes(${t.id})" title="Detail / Comment">📄</button>
+        <button class="bic" onclick="openTaskModal(${t.id})" title="Edit">✏️</button>
+      </div>
+    </div>`;
+  };
+
+  let html = '';
+
+  if(assignedToMe.length){
+    html += `<div class="mytask-sec">
+      <div class="mytask-sec-title">📥 Assigned to Me <span class="cnt">${assignedToMe.length}</span></div>
+      ${assignedToMe.map(buildMtCard).join('')}
+    </div>`;
+  }
+  if(selfAssigned.length){
+    html += `<div class="mytask-sec">
+      <div class="mytask-sec-title">🙋 Self Assigned <span class="cnt">${selfAssigned.length}</span></div>
+      ${selfAssigned.map(buildMtCard).join('')}
+    </div>`;
+  }
+  if(completedMine.length){
+    html += `<div class="mytask-sec">
+      <div class="mytask-sec-title">✅ Completed <span class="cnt">${completedMine.length}</span></div>
+      ${completedMine.map(buildMtCard).join('')}
+    </div>`;
+  }
+  if(!html){
+    html = `<div class="notif-empty"><div class="notif-empty-ic">🎉</div><div style="font-weight:700;font-size:.95rem">All clear!</div><div style="font-size:.82rem;color:var(--lt);margin-top:5px">No active tasks assigned to you right now.</div></div>`;
+  }
+  body.innerHTML = html;
+}
+
+/* ══════════════════════════════════════
+   NOTIFICATIONS PAGE
+══════════════════════════════════════ */
+function renderNotifications(){
+  const body = document.getElementById('notifications-body');
+  if(!body) return;
+  const today = todayStr();
+  const myUid = _fbUser?.uid || WS_CUR_USER?.uid || WS_CUR_USER?.id || null;
+
+  const cards = [];
+
+  // 1. Tasks assigned TO me (unread = not in readBy)
+  D.tasks.filter(t => t.assignedTo === myUid && t.assignedBy !== myUid).forEach(t => {
+    const assigner = t.assignedBy
+      ? (_wsMembers.find(m=>m.uid===t.assignedBy) || (WS.users||[]).find(u=>u.id===t.assignedBy||u.uid===t.assignedBy))
+      : null;
+    const isRead = (t.readBy||[]).includes(myUid);
+    const ovr  = t.deadline && deadlineDate(t.deadline) < today;
+    cards.push({
+      ts: t.assignedAt || 0,
+      html: `<div class="notif-card ${isRead?'':'unread'}" id="ncard-${t.id}">
+        <div class="notif-card-title">📌 Task Assigned to You: <strong>${esc(t.title)}</strong></div>
+        <div class="notif-card-sub">
+          ${assigner?`By <strong>${esc(assigner.name)}</strong> · `:''}
+          Status: <strong>${(S_CFG[t.status]||S_CFG.todo).label}</strong>
+          ${t.deadline?` · Due: <strong style="color:${ovr?'var(--err)':'inherit'}">${ovr?'⚠️ ':''}${fmtDateTime(t.deadline)}</strong>`:''}
+        </div>
+        <div style="display:flex;gap:7px;flex-wrap:wrap">
+          <button class="btn bp bsm" onclick="viewNotes(${t.id});markNotifRead(${t.id})">💬 View &amp; Comment</button>
+          <button class="btn bo bsm" onclick="openTaskModal(${t.id})">✏️ Edit</button>
+          ${!isRead?`<button class="btn bo bsm" onclick="markNotifRead(${t.id})">✓ Mark Read</button>`:''}
+        </div>
+        <div class="notif-card-ts">${t.assignedAt?new Date(t.assignedAt).toLocaleString('en-IN',{day:'2-digit',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit'}):''}</div>
+      </div>`
+    });
+  });
+
+  // 2. Tasks I assigned — show latest status update
+  D.tasks.filter(t => t.assignedBy === myUid && t.assignedTo && t.assignedTo !== myUid).forEach(t => {
+    const assignee = _wsMembers.find(m=>m.uid===t.assignedTo) || (WS.users||[]).find(u=>u.id===t.assignedTo||u.uid===t.assignedTo);
+    const sc = S_CFG[t.status] || S_CFG.todo;
+    const isDone = t.status === 'done';
+    cards.push({
+      ts: t.startedAt || t.acceptedAt || t.assignedAt || 0,
+      html: `<div class="notif-card ${isDone?'success':'info'}">
+        <div class="notif-card-title">📊 Task You Assigned: <strong>${esc(t.title)}</strong></div>
+        <div class="notif-card-sub">
+          ${assignee?`To <strong>${esc(assignee.name)}</strong> · `:''}
+          Status: <span class="bdg ${sc.cls}" style="display:inline-flex">${sc.label}</span>
+          ${t.completedAt?` · Completed ${new Date(t.completedAt).toLocaleDateString('en-IN',{day:'2-digit',month:'short'})}` : ''}
+        </div>
+        <div style="display:flex;gap:7px;flex-wrap:wrap">
+          <button class="btn bp bsm" onclick="viewNotes(${t.id})">💬 View &amp; Comment</button>
+        </div>
+        <div class="notif-card-ts">${t.assignedAt?new Date(t.assignedAt).toLocaleString('en-IN',{day:'2-digit',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit'}):''}</div>
+      </div>`
+    });
+  });
+
+  // 3. Overdue tasks
+  D.tasks.filter(t => t.status!=='done' && t.deadline && deadlineDate(t.deadline) < today && (!myUid || t.assignedTo===myUid || t.createdBy===myUid || !t.assignedTo)).forEach(t => {
+    cards.push({
+      ts: 0,
+      html: `<div class="notif-card unread">
+        <div class="notif-card-title">⚠️ Overdue: <strong>${esc(t.title)}</strong></div>
+        <div class="notif-card-sub">Was due <strong>${fmtDateTime(t.deadline)}</strong> · Status: ${(S_CFG[t.status]||S_CFG.todo).label}</div>
+        <div style="display:flex;gap:7px">
+          <button class="btn bp bsm" onclick="openTaskModal(${t.id})">✏️ Update</button>
+        </div>
+      </div>`
+    });
+  });
+
+  // 4. Recent comments on tasks I own or am assigned to
+  D.tasks.filter(t => t.assignedTo === myUid || t.assignedBy === myUid || t.createdBy === myUid).forEach(t => {
+    (t.comments||[]).filter(c => c.uid !== myUid).forEach(c => {
+      cards.push({
+        ts: c.ts || 0,
+        html: `<div class="notif-card info">
+          <div class="notif-card-title">💬 Comment on: <strong>${esc(t.title)}</strong></div>
+          <div class="notif-card-sub"><strong>${esc(c.name||'Someone')}</strong>: ${esc(c.text.length>80?c.text.slice(0,80)+'…':c.text)}</div>
+          <div style="display:flex;gap:7px">
+            <button class="btn bp bsm" onclick="viewNotes(${t.id})">View Thread</button>
+          </div>
+          <div class="notif-card-ts">${c.ts?new Date(c.ts).toLocaleString('en-IN',{day:'2-digit',month:'short',hour:'2-digit',minute:'2-digit'}):''}</div>
+        </div>`
+      });
+    });
+  });
+
+  if(!cards.length){
+    body.innerHTML = `<div class="notif-empty"><div class="notif-empty-ic">🎉</div><div style="font-weight:700;font-size:1rem">You're all caught up!</div><div style="font-size:.82rem;color:var(--lt);margin-top:6px">Task assignments, status updates, and comments will appear here.</div></div>`;
+    return;
+  }
+  // Sort newest first
+  cards.sort((a,b) => b.ts - a.ts);
+  body.innerHTML = cards.map(c => c.html).join('');
+}
+
+function markNotifRead(taskId){
+  const myUid = _fbUser?.uid || WS_CUR_USER?.uid || WS_CUR_USER?.id || null;
+  if(!myUid) return;
+  const t = D.tasks.find(x => x.id === taskId);
+  if(!t) return;
+  (t.readBy = t.readBy||[]);
+  if(!t.readBy.includes(myUid)) t.readBy.push(myUid);
+  save();
+  renderNotifications();
+  checkDueNotifications();
+}
+function markAllNotifRead(){
+  const myUid = _fbUser?.uid || WS_CUR_USER?.uid || WS_CUR_USER?.id || null;
+  if(!myUid) return;
+  D.tasks.forEach(t => {
+    if(t.assignedTo === myUid){
+      (t.readBy = t.readBy||[]);
+      if(!t.readBy.includes(myUid)) t.readBy.push(myUid);
+    }
+  });
+  save(); renderNotifications(); checkDueNotifications();
+  toast('All notifications marked as read', 'info');
+}
+
+/* ══════════════════════════════════════
+   SELF ASSIGN
+══════════════════════════════════════ */
+function selfAssignTask(){
+  const myUid = _fbUser?.uid || WS_CUR_USER?.uid || WS_CUR_USER?.id || null;
+  const at = document.getElementById('t-assignedto');
+  if(!at) return;
+  if(myUid){
+    // Try to select the matching option
+    const opt = [...at.options].find(o => o.value === myUid);
+    if(opt){ at.value = myUid; toast('🙋 Self assigned!', 'success'); }
+    else { toast('Your user not found in the list yet — loading…', 'info'); }
+  } else {
+    toast('No active user — log in first', 'error');
+  }
+}
+
+/* ══════════════════════════════════════
+   EXCEL EXPORT
+══════════════════════════════════════ */
+function exportToExcel(){
+  if(typeof XLSX === 'undefined'){ toast('Excel library not loaded. Check internet connection.','error'); return; }
+
+  const wb = XLSX.utils.book_new();
+
+  // ── Sheet 1: Summary ──
+  const today = todayStr();
+  const done  = D.tasks.filter(t=>t.status==='done').length;
+  const overdue = D.tasks.filter(t=>t.status!=='done'&&t.deadline&&deadlineDate(t.deadline)<today).length;
+  const prog  = D.tasks.length ? Math.round((done/D.tasks.length)*100) : 0;
+  const summaryData = [
+    ['VipinTaskManager Pro — Data Export'],
+    ['Generated', new Date().toLocaleString('en-IN')],
+    [],
+    ['Metric', 'Value'],
+    ['Total Goals',    D.visions.length],
+    ['Total Projects', D.projects.length],
+    ['Total Tasks',    D.tasks.length],
+    ['Completed Tasks',done],
+    ['Overdue Tasks',  overdue],
+    ['Overall Progress', prog + '%'],
+  ];
+  XLSX.utils.book_append_sheet(wb, XLSX.utils.aoa_to_sheet(summaryData), 'Summary');
+
+  // ── Sheet 2: Goals ──
+  const goalsHeader = ['ID','Goal Title','Type','Total Hours','Target Date','Start Date','End Date','Linked Projects'];
+  const goalsRows   = D.visions.map(v => [
+    v.id, v.title, v.type||'', v.totalHours||0, v.targetDate||'', v.startDate||'', v.endDate||'',
+    D.projects.filter(p=>p.visionId==v.id).map(p=>p.title).join(', ')
+  ]);
+  XLSX.utils.book_append_sheet(wb, XLSX.utils.aoa_to_sheet([goalsHeader,...goalsRows]), 'Goals');
+
+  // ── Sheet 3: Projects ──
+  const projHeader = ['ID','Project Title','Linked Goal','Hours Allocated','Done Hours','Progress %','Start Date','End Date','Task Count'];
+  const projRows   = D.projects.map(p => {
+    const v = D.visions.find(x=>x.id==p.visionId);
+    const goalH = v ? (v.totalHours||0) : 0;
+    const allotH = projectHours(p, D.projects, goalH);
+    const doneH  = projectDoneHours(p);
+    const pct    = allotH ? Math.round((doneH/allotH)*100) : 0;
+    return [p.id, p.title, v?.title||'Unlinked', allotH.toFixed(1), doneH.toFixed(1), pct+'%',
+            p.startDate||'', p.endDate||'', D.tasks.filter(t=>t.projectId==p.id).length];
+  });
+  XLSX.utils.book_append_sheet(wb, XLSX.utils.aoa_to_sheet([projHeader,...projRows]), 'Projects');
+
+  // ── Sheet 4: Tasks ──
+  const taskHeader = ['ID','Task Title','Goal','Project','Priority','Status','Start Date','Due Date','Due Time',
+                      'Est Hours','Actual Hours','Progress %','Assigned To','Assigned By','Assigned At',
+                      'Accepted At','Started At','Completed At','Tags','Comments Count','Notes (Plain)'];
+  const taskRows = D.tasks.map(t => {
+    const proj = D.projects.find(p=>p.id==t.projectId);
+    const goal = proj ? D.visions.find(v=>v.id==proj.visionId) : null;
+    const assignee  = t.assignedTo  ? (_wsMembers.find(m=>m.uid===t.assignedTo)||(WS.users||[]).find(u=>u.id===t.assignedTo))?.name||t.assignedTo  : '';
+    const assigner  = t.assignedBy  ? (_wsMembers.find(m=>m.uid===t.assignedBy)||(WS.users||[]).find(u=>u.id===t.assignedBy))?.name||t.assignedBy  : '';
+    const ddlDate   = deadlineDate(t.deadline);
+    const ddlTime   = t.deadline?.includes('T') ? t.deadline.split('T')[1] : '';
+    const estH = +t.estHours||0;
+    const actH = +t.actualHours||0;
+    const pct  = estH ? Math.min(100, Math.round((actH/estH)*100))+'%' : '';
+    const notes = (t.notes||'').replace(/<[^>]+>/g,' ').replace(/\s+/g,' ').trim();
+    return [t.id, t.title, goal?.title||'', proj?.title||'', t.priority, t.status,
+            t.startDate||'', ddlDate, ddlTime,
+            estH, actH, pct,
+            assignee, assigner,
+            t.assignedAt  ? new Date(t.assignedAt).toLocaleString('en-IN')  : '',
+            t.acceptedAt  ? new Date(t.acceptedAt).toLocaleString('en-IN')  : '',
+            t.startedAt   ? new Date(t.startedAt).toLocaleString('en-IN')   : '',
+            t.completedAt ? new Date(t.completedAt).toLocaleString('en-IN') : '',
+            (t.tags||[]).join(', '), (t.comments||[]).length, notes];
+  });
+  XLSX.utils.book_append_sheet(wb, XLSX.utils.aoa_to_sheet([taskHeader,...taskRows]), 'Tasks');
+
+  // ── Sheet 5: Comments ──
+  const cmtHeader = ['Task ID','Task Title','Commenter','Comment Text','Timestamp'];
+  const cmtRows = [];
+  D.tasks.forEach(t => {
+    (t.comments||[]).forEach(c => {
+      cmtRows.push([t.id, t.title, c.name||'', c.text||'', c.ts?new Date(c.ts).toLocaleString('en-IN'):'']);
+    });
+  });
+  if(cmtRows.length) XLSX.utils.book_append_sheet(wb, XLSX.utils.aoa_to_sheet([cmtHeader,...cmtRows]), 'Comments');
+
+  const fname = `TaskManager_Export_${today}.xlsx`;
+  XLSX.writeFile(wb, fname);
+  toast(`📥 Exported to ${fname}`, 'success');
 }
 
 /* ══════════════════════════════════════
@@ -2545,6 +3048,8 @@ document.addEventListener('keydown', e => {
 document.getElementById('t-title').addEventListener('keydown', e => { if(e.key==='Enter'){ e.preventDefault(); saveTask(); } });
 document.addEventListener('keydown', e => {
   if(e.key==='Enter' && document.activeElement?.id === 'vm-subt-input'){ e.preventDefault(); addSubtask(); }
+  // Ctrl+Enter sends a comment
+  if((e.ctrlKey||e.metaKey) && e.key==='Enter' && document.activeElement?.id === 'vm-cmt-input'){ e.preventDefault(); addTaskComment(); }
 });
 
 /* ══════════════════════════════════════
@@ -2872,10 +3377,10 @@ function renderMyDay(){
     const d = new Date();
     dateEl.textContent = d.toLocaleDateString('en-IN',{weekday:'long', day:'numeric', month:'long', year:'numeric'});
   }
-  const overdue  = D.tasks.filter(t => t.status !== 'done' && t.deadline && t.deadline < today)
-                          .sort((a,b) => a.deadline.localeCompare(b.deadline));
-  const todoToday = D.tasks.filter(t => t.status !== 'done' && t.deadline === today);
-  const inProg   = D.tasks.filter(t => t.status === 'in_progress' && t.deadline !== today && (!t.deadline || t.deadline >= today));
+  const overdue  = D.tasks.filter(t => t.status !== 'done' && t.deadline && deadlineDate(t.deadline) < today)
+                          .sort((a,b) => deadlineDate(a.deadline).localeCompare(deadlineDate(b.deadline)));
+  const todoToday = D.tasks.filter(t => t.status !== 'done' && t.deadline && deadlineDate(t.deadline) === today);
+  const inProg   = D.tasks.filter(t => t.status === 'in_progress' && deadlineDate(t.deadline) !== today && (!t.deadline || deadlineDate(t.deadline) >= today));
 
   document.getElementById('md-overdue-count').textContent  = overdue.length;
   document.getElementById('md-today-count').textContent    = todoToday.length;
@@ -2956,23 +3461,19 @@ function initNotifications(){
   checkDueNotifications();
 }
 function checkDueNotifications(){
-  if(Notification.permission !== 'granted') return;
-  const now = new Date();
-  const soon = new Date(now.getTime() + 30*60000);
-  const soonStr = soon.toISOString().split('T')[0];
-  const overdue = D.tasks.filter(t => t.status!=='done' && t.deadline && t.deadline < now.toISOString().split('T')[0]);
-  const dueSoon = D.tasks.filter(t => t.status!=='done' && t.deadline === soonStr);
-  const dot = document.getElementById('notif-dot');
-  if(dot) dot.classList.toggle('show', overdue.length > 0 || dueSoon.length > 0);
-}
-function showNotifications(){
   const today = todayStr();
-  const overdue = D.tasks.filter(t => t.status!=='done' && t.deadline && t.deadline < today);
-  const dueSoon = D.tasks.filter(t => t.status!=='done' && t.deadline === today);
-  if(!overdue.length && !dueSoon.length){ toast('No urgent notifications 🎉','info'); return; }
-  if(overdue.length) toast(`⚠️ ${overdue.length} overdue task${overdue.length>1?'s':''}`, 'error');
-  if(dueSoon.length) toast(`📅 ${dueSoon.length} task${dueSoon.length>1?'s':''} due today`, 'info');
+  const myUid = _fbUser?.uid || null;
+  // Overdue + assigned-to-me for badge
+  const overdue  = D.tasks.filter(t => t.status!=='done' && t.deadline && deadlineDate(t.deadline) < today);
+  const assigned = myUid ? D.tasks.filter(t => t.assignedTo === myUid && t.status !== 'done' && t.status !== 'accepted') : [];
+  const dot = document.getElementById('notif-dot');
+  const badge = document.getElementById('notif-count-badge');
+  const total = overdue.length + assigned.length;
+  if(dot) dot.classList.toggle('show', total > 0);
+  if(badge){ badge.textContent = total > 99 ? '99+' : total; badge.style.display = total > 0 ? '' : 'none'; }
 }
+// Navigate to full Notifications page
+function showNotifications(){ showPage('notifications'); }
 
 /* ══════════════════════════════════════
    LIVE TIMER
