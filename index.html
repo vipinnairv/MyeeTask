@@ -2161,22 +2161,42 @@ function openTaskModal(taskId=null, presetDate=null){
   tp.innerHTML = '<option value="">— No Project —</option>' +
     D.projects.map(p => `<option value="${p.id}">${esc(p.title)}</option>`).join('');
 
-  // Populate assign-to dropdown (company mode only, non-admin members)
+  // Populate assign-to dropdown (company mode only)
+  // Uses an inner helper so it can be called twice:
+  //   1. Immediately with cached _wsMembers (modal opens with no delay)
+  //   2. After a background fbLoadMembers() refresh so newly-joined invitees appear
   const at = document.getElementById('t-assignedto');
   const atWrap = document.getElementById('t-assignto-wrap');
-  const assignableMembers = _wsMembers.filter(m => !m.isAdmin);
-  if(WS_MODE === 'company' && assignableMembers.length) {
-    atWrap.style.display = '';
-    at.innerHTML = '<option value="">— Unassigned —</option>' +
-      assignableMembers.map(m => `<option value="${m.uid}">${esc(m.name)} (${esc(m.position||m.role||'')})</option>`).join('');
-  } else if(WS_MODE === 'company' && (WS.users||[]).filter(u=>!u.isAdmin).length) {
-    // Fallback to local WS.users if Firestore members not loaded yet
-    atWrap.style.display = '';
-    at.innerHTML = '<option value="">— Unassigned —</option>' +
-      (WS.users||[]).filter(u=>!u.isAdmin).map(u => `<option value="${u.id}">${esc(u.name)} (${esc(u.role||'')})</option>`).join('');
-  } else {
-    atWrap.style.display = 'none';
-  }
+
+  const populateAssignDropdown = (preserveVal) => {
+    const firestoreMembers = _wsMembers.filter(m => !m.isAdmin);
+    const localMembers     = (WS.users||[]).filter(u => !u.isAdmin);
+    if(WS_MODE !== 'company'){
+      atWrap.style.display = 'none';
+      return;
+    }
+    if(firestoreMembers.length){
+      atWrap.style.display = '';
+      at.innerHTML = '<option value="">— Unassigned —</option>' +
+        firestoreMembers.map(m =>
+          `<option value="${m.uid}">${esc(m.name)} (${esc(m.position||m.role||'')})</option>`
+        ).join('');
+    } else if(localMembers.length){
+      // Fallback to localStorage WS.users if Firestore cache is empty
+      atWrap.style.display = '';
+      at.innerHTML = '<option value="">— Unassigned —</option>' +
+        localMembers.map(u =>
+          `<option value="${u.id}">${esc(u.name)} (${esc(u.role||'')})</option>`
+        ).join('');
+    } else {
+      atWrap.style.display = 'none';
+    }
+    // Restore any previously-selected assignee after rebuild
+    if(preserveVal != null) at.value = preserveVal;
+  };
+
+  // First pass — instant render from cache
+  populateAssignDropdown(null);
 
   const fb = document.getElementById('t-editor-fallback');
   if(taskId){
@@ -2217,6 +2237,18 @@ function openTaskModal(taskId=null, presetDate=null){
   }
   modal.style.display = 'flex';
   setTimeout(()=>document.getElementById('t-title').focus(), 60);
+
+  // Background member refresh — fires AFTER modal is open so there is no perceived delay.
+  // When fbLoadMembers() resolves the dropdown is rebuilt with the latest Firestore data,
+  // picking up any invitees who joined since the admin last logged in.
+  if(WS_MODE === 'company' && _fbFS && WS.wsId){
+    const savedAssignee = taskId
+      ? (D.tasks.find(x => x.id === taskId)?.assignedTo || '')
+      : '';
+    fbLoadMembers()
+      .then(() => populateAssignDropdown(savedAssignee))
+      .catch(e => console.warn('openTaskModal member refresh:', e));
+  }
 }
 function closeTaskModal(){
   document.getElementById('task-modal').style.display = 'none';
@@ -3265,14 +3297,23 @@ async function pwCreateCompany(){
     wsMode: 'company', wsId, wsName: org, position: pos, isAdmin: true, createdAt: Date.now()
   };
   try {
+    // ── Step 1: Create workspace root + admin member + profile (atomic batch) ──
+    // The position is NOT included here because Firestore evaluates rules against
+    // the PRE-COMMIT state.  At rule-evaluation time the member doc doesn't exist
+    // yet, so isWorkspaceAdmin() would return false and the position write would
+    // be rejected.  We write the position in Step 2 after the member doc exists.
     const batch = _fbFS.batch();
     batch.set(_fbFS.doc('workspaces/' + wsId), { orgName: org, createdBy: _fbUser.uid, wsId, createdAt: Date.now() });
     batch.set(_fbFS.doc('workspaces/' + wsId + '/members/' + _fbUser.uid), adminMember);
     batch.set(_fbFS.doc('users/' + _fbUser.uid + '/profile/main'), profile);
-    // Seed one default position
-    const posId = 'pos_' + Date.now();
-    batch.set(_fbFS.doc('workspaces/' + wsId + '/positions/' + posId), { name: pos, createdBy: _fbUser.uid, createdAt: Date.now() });
     await batch.commit();
+
+    // ── Step 2: Seed initial position — member doc is now committed ──────────
+    // isWorkspaceAdmin() now resolves correctly in Firestore rules.
+    const posId = 'pos_' + Date.now();
+    await _fbFS.doc('workspaces/' + wsId + '/positions/' + posId)
+      .set({ name: pos, createdBy: _fbUser.uid, createdAt: Date.now() });
+
     _fbProfile = profile;
     _wsMembers = [adminMember];
     _wsPositions = [{ id: posId, name: pos }];
