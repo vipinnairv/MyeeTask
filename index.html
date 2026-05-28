@@ -3343,10 +3343,20 @@ async function pwValidateInvite(){
   if(!code){ errEl.textContent = 'Please enter an invite code'; errEl.style.display = ''; return; }
   try {
     const doc = await _fbFS.doc('invites/' + code).get();
-    if(!doc.exists || !doc.data().active){
-      errEl.textContent = '❌ Invalid or expired invite code'; errEl.style.display = ''; return;
+    if(!doc.exists){
+      errEl.textContent = '❌ Invalid invite code — please check with your admin'; errEl.style.display = ''; return;
     }
-    const inv = doc.data();
+    const invData = doc.data();
+    if(!invData.active){
+      // Distinguish "already used" from "manually revoked" for a clearer message
+      if((invData.usedBy||[]).length > 0){
+        errEl.textContent = '❌ This invite code has already been used and is no longer valid';
+      } else {
+        errEl.textContent = '❌ This invite code has been revoked — please ask your admin for a new one';
+      }
+      errEl.style.display = ''; return;
+    }
+    const inv = invData; // already fetched above — reuse, no second .data() call
     _pendingInviteData = { code, ...inv };
     document.getElementById('pw-invite-info').style.display = '';
     document.getElementById('pw-invite-company').textContent = inv.wsName;
@@ -3394,9 +3404,12 @@ async function pwJoinCompany(){
     const batch = _fbFS.batch();
     batch.set(_fbFS.doc('workspaces/' + wsId + '/members/' + _fbUser.uid), memberData);
     batch.set(_fbFS.doc('users/' + _fbUser.uid + '/profile/main'), profile);
-    // Mark invite as used (append uid)
+    // Mark invite as used — single-use: deactivate immediately so no one else can reuse it
     batch.update(_fbFS.doc('invites/' + code), {
-      usedBy: firebase.firestore.FieldValue.arrayUnion(_fbUser.uid)
+      usedBy:  firebase.firestore.FieldValue.arrayUnion(_fbUser.uid),
+      active:  false,
+      usedAt:  Date.now(),
+      usedByName: name   // human-readable label for admin UI
     });
     await batch.commit();
     _fbProfile = profile;
@@ -3554,17 +3567,55 @@ function renderAdminInvites(){
     list.innerHTML = `<div style="color:var(--muted);font-size:.8rem;padding:6px 0">No invite codes yet. Click "Generate" to create one.</div>`;
     return;
   }
-  list.innerHTML = _wsInvites.filter(i=>i.active).map(i => `
-    <div style="display:flex;align-items:center;justify-content:space-between;padding:10px 12px;background:rgba(91,110,245,.06);border:1px solid rgba(91,110,245,.2);border-radius:var(--r);margin-bottom:7px;flex-wrap:wrap;gap:8px">
-      <div>
-        <span style="font-family:monospace;font-size:1.1rem;font-weight:800;letter-spacing:.12em;color:var(--p)">${esc(i.code)}</span>
-        <span style="font-size:.72rem;color:var(--muted);margin-left:8px">Used by ${(i.usedBy||[]).length} member${(i.usedBy||[]).length!==1?'s':''}</span>
-      </div>
-      <div style="display:flex;gap:6px">
-        <button class="btn bo bsm" onclick="copyInviteCode('${i.code}')">📋 Copy</button>
-        <button class="bic bic-red" onclick="adminDeleteInvite('${i.code}')" title="Deactivate">🗑️</button>
-      </div>
-    </div>`).join('');
+
+  // Sort: active first, then used (most-recently-used first), then revoked
+  const sorted = [..._wsInvites].sort((a,b) => {
+    const rankA = a.active ? 0 : (a.usedBy||[]).length ? 1 : 2;
+    const rankB = b.active ? 0 : (b.usedBy||[]).length ? 1 : 2;
+    if(rankA !== rankB) return rankA - rankB;
+    return (b.usedAt||b.createdAt||0) - (a.usedAt||a.createdAt||0);
+  });
+
+  list.innerHTML = sorted.map(i => {
+    const isUsed    = !i.active && (i.usedBy||[]).length > 0;
+    const isRevoked = !i.active && (i.usedBy||[]).length === 0;
+
+    if(i.active){
+      // ── Active: can still be used ──
+      return `
+        <div style="display:flex;align-items:center;justify-content:space-between;padding:10px 12px;background:rgba(91,110,245,.06);border:1px solid rgba(91,110,245,.2);border-radius:var(--r);margin-bottom:7px;flex-wrap:wrap;gap:8px">
+          <div>
+            <span style="font-family:monospace;font-size:1.1rem;font-weight:800;letter-spacing:.12em;color:var(--p)">${esc(i.code)}</span>
+            <span style="display:inline-flex;align-items:center;gap:3px;font-size:.69rem;font-weight:700;background:rgba(16,185,129,.12);color:#059669;border:1px solid rgba(16,185,129,.3);border-radius:99px;padding:1px 7px;margin-left:7px">🟢 Active</span>
+          </div>
+          <div style="display:flex;gap:6px">
+            <button class="btn bo bsm" onclick="copyInviteCode('${i.code}')">📋 Copy</button>
+            <button class="bic bic-red" onclick="adminDeleteInvite('${i.code}')" title="Revoke">🗑️</button>
+          </div>
+        </div>`;
+    } else if(isUsed){
+      // ── Used: single-use consumed ──
+      const usedByLabel = i.usedByName ? esc(i.usedByName) : (i.usedBy||[]).length + ' member';
+      const usedDate    = i.usedAt ? new Date(i.usedAt).toLocaleDateString() : '';
+      return `
+        <div style="display:flex;align-items:center;justify-content:space-between;padding:10px 12px;background:rgba(16,185,129,.04);border:1px solid rgba(16,185,129,.2);border-radius:var(--r);margin-bottom:7px;flex-wrap:wrap;gap:8px;opacity:.85">
+          <div>
+            <span style="font-family:monospace;font-size:1.1rem;font-weight:800;letter-spacing:.12em;color:var(--muted);text-decoration:line-through">${esc(i.code)}</span>
+            <span style="display:inline-flex;align-items:center;gap:3px;font-size:.69rem;font-weight:700;background:rgba(16,185,129,.12);color:#059669;border:1px solid rgba(16,185,129,.25);border-radius:99px;padding:1px 7px;margin-left:7px">✅ Used</span>
+            <span style="font-size:.71rem;color:var(--muted);margin-left:5px">by ${usedByLabel}${usedDate ? ' · ' + usedDate : ''}</span>
+          </div>
+        </div>`;
+    } else {
+      // ── Revoked: manually deactivated by admin ──
+      return `
+        <div style="display:flex;align-items:center;justify-content:space-between;padding:10px 12px;background:rgba(239,68,68,.03);border:1px solid rgba(239,68,68,.15);border-radius:var(--r);margin-bottom:7px;flex-wrap:wrap;gap:8px;opacity:.7">
+          <div>
+            <span style="font-family:monospace;font-size:1.1rem;font-weight:800;letter-spacing:.12em;color:var(--muted);text-decoration:line-through">${esc(i.code)}</span>
+            <span style="display:inline-flex;align-items:center;gap:3px;font-size:.69rem;font-weight:700;background:rgba(239,68,68,.1);color:var(--err);border:1px solid rgba(239,68,68,.25);border-radius:99px;padding:1px 7px;margin-left:7px">🚫 Revoked</span>
+          </div>
+        </div>`;
+    }
+  }).join('');
 }
 
 /* ══════════════════════════════════════
