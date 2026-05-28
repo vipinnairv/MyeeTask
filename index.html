@@ -112,6 +112,7 @@ body{font-family:var(--ffb);background:var(--bg);color:var(--text);min-height:10
 .bh{background:#FEF2F2;color:#EF4444}.bm{background:#FFFBEB;color:#D97706}.bl{background:#F0FDF4;color:#059669}
 .btd{background:#F9FAFB;color:#6B7280;border:1px solid #E5E7EB}
 .bip{background:#EFF6FF;color:#2563EB}.brv{background:#FFFBEB;color:#D97706}.bdn{background:#ECFDF5;color:#059669}
+.bsa{background:#F5F3FF;color:#7C3AED;border:1px solid #DDD6FE}.bsac{background:#ECFEFF;color:#0891B2;border:1px solid #A5F3FC}
 
 /* ── TASK CARDS ── */
 .tgrd{display:grid;grid-template-columns:repeat(auto-fill,minmax(295px,1fr));gap:12px}
@@ -393,9 +394,113 @@ body{font-family:var(--ffb);background:var(--bg);color:var(--text);min-height:10
 .notif-btn:hover{background:rgba(255,255,255,.15)}
 .notif-dot{position:absolute;top:2px;right:2px;width:7px;height:7px;background:#EF4444;border-radius:50%;border:1.5px solid transparent;display:none}
 .notif-dot.show{display:block}
+
+/* ── ONBOARDING ── */
+.mode-card{border:2px solid var(--bd);border-radius:var(--rx);padding:20px;text-align:center;cursor:pointer;transition:var(--dur);background:var(--surf2)}
+.mode-card:hover{border-color:var(--p);background:rgba(91,110,245,.06);transform:translateY(-2px);box-shadow:var(--sh)}
+.mode-card.selected{border-color:var(--p);background:rgba(91,110,245,.1);box-shadow:0 0 0 3px rgba(91,110,245,.18)}
+.ob-step{animation:pgIn .22s ease}
+
+/* ── USER MANAGEMENT ── */
+.user-av-sm{width:22px;height:22px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;font-size:.58rem;font-weight:800;color:#fff;flex-shrink:0;vertical-align:middle}
+.urow{display:flex;align-items:center;gap:10px;padding:10px 13px;border:1px solid var(--bd);border-radius:var(--r);background:var(--surf);margin-bottom:6px;transition:var(--dur)}
+.urow:hover{border-color:var(--p);box-shadow:0 1px 6px rgba(91,110,245,.09)}
+.urow-av{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.72rem;font-weight:800;color:#fff;flex-shrink:0}
+.urow-info{flex:1;min-width:0}
+.urow-name{font-family:var(--ffd);font-weight:700;font-size:.85rem;color:var(--text)}
+.urow-meta{font-size:.72rem;color:var(--muted)}
+.role-badge{display:inline-block;padding:2px 8px;border-radius:var(--rf);font-size:.67rem;font-weight:700;background:rgba(91,110,245,.1);color:var(--p);border:1px solid rgba(91,110,245,.2)}
+.admin-badge{background:rgba(16,185,129,.12);color:#065f46;border-color:rgba(16,185,129,.3)}
+.you-badge{background:rgba(245,158,11,.12);color:#92400e;border-color:rgba(245,158,11,.3)}
+
+/* ── USER SWITCH PILL ── */
+.user-switch-wrap{padding:8px 9px;border-top:1px solid var(--bd);margin-top:8px}
+.user-switch-btn{display:flex;align-items:center;gap:8px;width:100%;padding:7px 10px;border-radius:var(--r);border:1.5px solid var(--bd);background:var(--surf2);cursor:pointer;transition:var(--dur);font-size:.79rem;font-weight:600;color:var(--text)}
+.user-switch-btn:hover{border-color:var(--p);background:rgba(91,110,245,.05)}
+.user-switch-list{margin-top:6px;display:none}
+.user-switch-list.open{display:block}
+.user-sw-item{display:flex;align-items:center;gap:8px;padding:6px 10px;border-radius:var(--r);cursor:pointer;transition:var(--dur);font-size:.79rem}
+.user-sw-item:hover{background:var(--surf2)}
+.user-sw-item.active{background:rgba(91,110,245,.08);color:var(--p);font-weight:700}
+
+/* ── ADMIN CONSOLE ── */
+.admin-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:14px}
+.admin-card{background:var(--surf);border-radius:var(--rx);border:1px solid var(--bd);padding:20px;box-shadow:0 1px 4px rgba(91,110,245,.06)}
+.admin-card h3{font-family:var(--ffd);font-size:.9rem;font-weight:800;color:var(--text);margin-bottom:12px;display:flex;align-items:center;gap:6px}
+.workspace-pill{display:inline-flex;align-items:center;gap:5px;padding:3px 10px;border-radius:var(--rf);font-size:.72rem;font-weight:700}
+.wp-company{background:rgba(91,110,245,.1);color:var(--p);border:1px solid rgba(91,110,245,.25)}
+.wp-personal{background:rgba(16,185,129,.1);color:#065f46;border:1px solid rgba(16,185,129,.3)}
 </style>
 </head>
 <body>
+
+<!-- ONBOARDING MODAL (legacy - kept as shell, hidden) -->
+<div id="onboarding-modal" style="display:none">
+  <div>
+    <!-- Step 1: Choose Mode -->
+    <div id="ob-s1" class="ob-step">
+      <div style="text-align:center;margin-bottom:24px">
+        <div style="font-size:2.4rem;margin-bottom:10px">⚡</div>
+        <div style="font-family:var(--ffd);font-size:1.35rem;font-weight:800;color:var(--text)">Welcome to TaskManager Pro</div>
+        <div style="color:var(--muted);font-size:.84rem;margin-top:6px">How will you be using this app?</div>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:8px">
+        <div class="mode-card" onclick="obSelectMode('personal')" id="mc-personal">
+          <div style="font-size:2.2rem;margin-bottom:10px">👤</div>
+          <div style="font-family:var(--ffd);font-weight:800;font-size:1rem;margin-bottom:5px">Personal</div>
+          <div style="font-size:.75rem;color:var(--muted);line-height:1.5">Just for you. Track your own goals, projects and daily tasks.</div>
+        </div>
+        <div class="mode-card" onclick="obSelectMode('company')" id="mc-company">
+          <div style="font-size:2.2rem;margin-bottom:10px">🏢</div>
+          <div style="font-family:var(--ffd);font-weight:800;font-size:1rem;margin-bottom:5px">Company / Team</div>
+          <div style="font-size:.75rem;color:var(--muted);line-height:1.5">Team collaboration, task assignment &amp; org hierarchy.</div>
+        </div>
+      </div>
+    </div>
+    <!-- Step 2a: Personal Setup -->
+    <div id="ob-s2p" class="ob-step" style="display:none">
+      <div style="text-align:center;margin-bottom:20px">
+        <div style="font-size:1.8rem;margin-bottom:8px">👤</div>
+        <div style="font-family:var(--ffd);font-size:1.15rem;font-weight:800">Personal Setup</div>
+        <div style="color:var(--muted);font-size:.8rem;margin-top:4px">Quick — takes under a minute</div>
+      </div>
+      <div class="fg"><label class="fl">Your Name *</label><input id="ob-p-name" class="fc" placeholder="e.g. Elon Musk"></div>
+      <div class="fr" style="margin-top:10px">
+        <div class="fg"><label class="fl">Initials</label><input id="ob-p-init" class="fc" placeholder="EL" maxlength="3"></div>
+        <div class="fg"><label class="fl">Job Title / Role</label><input id="ob-p-role" class="fc" placeholder="e.g. Manager"></div>
+      </div>
+      <div style="color:var(--err);font-size:.78rem;margin-top:6px;display:none" id="ob-p-err"></div>
+      <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:20px">
+        <button class="btn bo" onclick="obBack()">← Back</button>
+        <button class="btn bp" onclick="finishOnboarding('personal')">Get Started 🚀</button>
+      </div>
+    </div>
+    <!-- Step 2b: Company Setup -->
+    <div id="ob-s2c" class="ob-step" style="display:none">
+      <div style="text-align:center;margin-bottom:18px">
+        <div style="font-size:1.8rem;margin-bottom:8px">🏢</div>
+        <div style="font-family:var(--ffd);font-size:1.15rem;font-weight:800">Company Workspace Setup</div>
+        <div style="color:var(--muted);font-size:.8rem;margin-top:4px">You'll be the Admin — add team members from Admin Console later</div>
+      </div>
+      <div class="fg"><label class="fl">Organization Name *</label><input id="ob-c-org" class="fc" placeholder="e.g. Acme Corp"></div>
+      <div class="fr" style="margin-top:10px">
+        <div class="fg"><label class="fl">Your Name *</label><input id="ob-c-name" class="fc" placeholder="Full name"></div>
+        <div class="fg"><label class="fl">Email *</label><input id="ob-c-email" class="fc" type="email" placeholder="you@company.com"></div>
+      </div>
+      <div class="fg" style="margin-top:10px"><label class="fl">Your Role</label>
+        <select id="ob-c-role" class="fc">
+          <option>Director</option><option>President</option><option>AVP</option>
+          <option selected>Senior Manager</option><option>Manager</option><option>Executive</option>
+        </select>
+      </div>
+      <div style="color:var(--err);font-size:.78rem;margin-top:6px;display:none" id="ob-c-err"></div>
+      <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:20px">
+        <button class="btn bo" onclick="obBack()">← Back</button>
+        <button class="btn bp" onclick="finishOnboarding('company')">Create Workspace 🚀</button>
+      </div>
+    </div>
+  </div>
+</div>
 
 <!-- HEADER -->
 <header class="hdr">
@@ -447,7 +552,17 @@ body{font-family:var(--ffb);background:var(--bg);color:var(--text);min-height:10
     <button class="nbtn"     data-page="tasks"      onclick="showPage('tasks')"><span class="nic">📋</span>Task Activity</button>
     <button class="nbtn"     data-page="calendar"   onclick="showPage('calendar')"><span class="nic">📅</span>Due Date Calendar</button>
     <button class="nbtn"     data-page="settings"   onclick="showPage('settings')"><span class="nic">⚙️</span>Data Management</button>
+    <button class="nbtn" id="admin-nav-btn" data-page="admin" onclick="showPage('admin')"><span class="nic">🛡️</span>Admin Console</button>
     <div class="qadd" onclick="openTaskModal()">✨ Quick Add Task</div>
+    <!-- User Switcher (Company Mode) -->
+    <div class="user-switch-wrap" id="user-switch-wrap" style="display:none">
+      <div class="user-switch-btn" onclick="toggleUserSwitcher()" id="usr-sw-btn">
+        <div class="user-av-sm" id="usr-sw-av" style="width:24px;height:24px;background:linear-gradient(135deg,#f093fb,#f5576c)">?</div>
+        <span id="usr-sw-name" style="flex:1;text-align:left">Select User</span>
+        <span style="font-size:.65rem;color:var(--muted)">▼</span>
+      </div>
+      <div class="user-switch-list" id="usr-sw-list"></div>
+    </div>
     <div style="padding:14px 10px 4px;margin-top:auto">
       <div style="font-size:.67rem;color:var(--lt);text-align:center;line-height:1.6">
         ⚡ <strong style="color:var(--p)">VipinTask</strong>Manager Pro<br>
@@ -564,6 +679,8 @@ body{font-family:var(--ffb);background:var(--bg);color:var(--text);min-height:10
         <select id="statusFilter" class="fsel" onchange="renderTasks()">
           <option value="all">All Statuses</option>
           <option value="todo">To Do</option>
+          <option value="assigned">Assigned</option>
+          <option value="accepted">Accepted</option>
           <option value="in_progress">In Progress</option>
           <option value="review">In Review</option>
           <option value="done">Done</option>
@@ -610,6 +727,11 @@ body{font-family:var(--ffb);background:var(--bg);color:var(--text);min-height:10
     <div id="page-settings" class="page">
       <div class="ph"><div><div class="ph-t">⚙️ Data Management</div><div class="ph-s">Backup, restore, and manage your app data</div></div></div>
       <div class="sgrd">
+        <!-- Workspace Config — always visible, regardless of mode -->
+        <div class="scd" style="grid-column:1/-1;border:1.5px solid rgba(91,110,245,.35);background:rgba(91,110,245,.03)">
+          <h3>🏢 Workspace Configuration</h3>
+          <div id="ws-config-body"></div>
+        </div>
         <div class="scd">
           <h3>📊 Data Overview</h3>
           <div id="data-overview"></div>
@@ -651,6 +773,83 @@ body{font-family:var(--ffb);background:var(--bg);color:var(--text);min-height:10
         </div>
       </div>
     </div>
+
+    <!-- ADMIN CONSOLE -->
+    <div id="page-admin" class="page">
+      <div class="ph">
+        <div>
+          <div class="ph-t">🛡️ Admin Console</div>
+          <div class="ph-s" id="admin-subtitle">Manage your workspace, team members and roles</div>
+        </div>
+        <div class="ph-r" id="admin-ph-r">
+          <!-- buttons injected by renderAdmin() -->
+        </div>
+      </div>
+      <div class="admin-grid">
+        <!-- Workspace Info -->
+        <div class="admin-card">
+          <h3>🏢 Workspace</h3>
+          <div id="admin-ws-info"></div>
+          <div style="margin-top:14px;display:flex;gap:8px;flex-wrap:wrap">
+            <button class="btn bo bsm" onclick="openSwitchModeModal()">⚙️ Change Mode</button>
+          </div>
+        </div>
+        <!-- Positions Manager -->
+        <div class="admin-card" id="admin-positions-card">
+          <h3>📋 Positions <span id="pos-count-badge" class="bdg btd" style="font-size:.7rem"></span></h3>
+          <div id="positions-list"></div>
+          <div style="display:flex;gap:8px;margin-top:12px" id="add-pos-wrap" style="display:none">
+            <input id="new-pos-input" class="fc" placeholder="e.g. Senior Analyst" style="flex:1;padding:7px 10px;font-size:.82rem" onkeydown="if(event.key==='Enter')adminAddPosition()">
+            <button class="btn bp bsm" onclick="adminAddPosition()">+ Add</button>
+          </div>
+        </div>
+        <!-- Team Members -->
+        <div class="admin-card" style="grid-column:1/-1">
+          <h3>👥 Team Members <span id="user-count-badge" class="bdg btd" style="font-size:.7rem"></span></h3>
+          <div id="users-list"></div>
+        </div>
+        <!-- Invite Codes -->
+        <div class="admin-card" style="grid-column:1/-1" id="admin-invites-card">
+          <h3>🔗 Invite Codes</h3>
+          <div style="font-size:.79rem;color:var(--muted);margin-bottom:12px">Generate a code and share it with the person you want to invite. They use it during Sign Up.</div>
+          <div id="invites-list"></div>
+          <button class="btn bp bsm" style="margin-top:12px" id="gen-invite-btn" onclick="adminGenerateInvite()">✨ Generate New Invite Code</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ADD USER MODAL -->
+    <div id="add-user-modal" class="mov" style="display:none" onclick="if(event.target===this)closeAddUserModal()">
+      <div class="mbox" style="max-width:480px">
+        <div class="mh"><span class="mht" id="aum-title">➕ Add Team Member</span><button class="mcl" onclick="closeAddUserModal()">✕</button></div>
+        <div class="mb">
+          <div class="fr">
+            <div class="fg"><label class="fl">Full Name *</label><input id="aum-name" class="fc" placeholder="e.g. Ravi Sharma"></div>
+            <div class="fg"><label class="fl">Email *</label><input id="aum-email" class="fc" type="email" placeholder="ravi@company.com"></div>
+          </div>
+          <div class="fr" style="margin-top:10px">
+            <div class="fg"><label class="fl">Role</label>
+              <select id="aum-role" class="fc">
+                <option>Director</option><option>President</option><option>AVP</option>
+                <option selected>Manager</option><option>Senior Manager</option><option>Executive</option>
+              </select>
+            </div>
+            <div class="fg"><label class="fl">Admin Access</label>
+              <select id="aum-admin" class="fc">
+                <option value="false">No (Regular Member)</option>
+                <option value="true">Yes (Admin)</option>
+              </select>
+            </div>
+          </div>
+          <div id="aum-err" style="color:var(--err);font-size:.78rem;margin-top:8px;display:none"></div>
+        </div>
+        <div class="mf">
+          <button class="btn bo" onclick="closeAddUserModal()">Cancel</button>
+          <button class="btn bp" onclick="saveUser()">💾 Save Member</button>
+        </div>
+      </div>
+    </div>
+
 
     <!-- PROFILE -->
     <div id="page-profile" class="page">
@@ -814,6 +1013,8 @@ body{font-family:var(--ffb);background:var(--bg);color:var(--text);min-height:10
         <div class="fg"><label class="fl">Status</label>
           <select id="t-status" class="fc">
             <option value="todo">📋 To Do</option>
+            <option value="assigned">📌 Assigned</option>
+            <option value="accepted">🤝 Accepted</option>
             <option value="in_progress">🔵 In Progress</option>
             <option value="review">🟡 In Review</option>
             <option value="done">✅ Done</option>
@@ -838,6 +1039,9 @@ body{font-family:var(--ffb);background:var(--bg);color:var(--text);min-height:10
           </select>
         </div>
         <div class="fg"><label class="fl">Blocked By (task ID)</label><input id="t-blocked" class="fc" placeholder="Task IDs comma-separated"></div>
+      </div>
+      <div class="fg" id="t-assignto-wrap"><label class="fl">Assign To</label>
+        <select id="t-assignedto" class="fc"><option value="">— Unassigned —</option></select>
       </div>
       <div class="fg"><label class="fl">Tags <span style="color:var(--lt);font-weight:500;text-transform:none">(type + Enter)</span></label>
         <div class="tag-input-wrap" id="tag-wrap" onclick="document.getElementById('tag-input').focus()">
@@ -955,8 +1159,164 @@ body{font-family:var(--ffb);background:var(--bg);color:var(--text);min-height:10
 <!-- TOASTS -->
 <div id="toasts"></div>
 
+<!-- ═══════════════════════════════════════════════════════════
+     LOGIN GATE — full-screen blocker until authenticated
+     ═══════════════════════════════════════════════════════════ -->
+<div id="login-gate" style="display:flex;position:fixed;inset:0;background:linear-gradient(135deg,#1a1f36 0%,#2d1b69 55%,#1a1f36 100%);z-index:9000;align-items:center;justify-content:center;flex-direction:column">
+  <div style="text-align:center;margin-bottom:28px">
+    <div style="font-size:3rem;margin-bottom:8px">⚡</div>
+    <div style="font-family:var(--ffd);font-size:1.55rem;font-weight:800;color:#fff;letter-spacing:-.01em">VipinTask<span style="opacity:.7;font-weight:500">Manager</span> Pro</div>
+    <div style="color:rgba(255,255,255,.55);font-size:.82rem;margin-top:5px">Sign in to access your workspace</div>
+  </div>
+  <div style="background:#fff;border-radius:var(--rx);width:92%;max-width:400px;padding:28px 26px;box-shadow:0 28px 70px rgba(0,0,0,.45)">
+    <div style="font-family:var(--ffd);font-size:1.05rem;font-weight:700;text-align:center;margin-bottom:18px;color:var(--text)" id="gate-title">Sign In</div>
+    <div class="fg" style="margin-bottom:11px">
+      <label class="fl">Email Address</label>
+      <input id="gate-email" class="fc" type="email" placeholder="you@company.com" autocomplete="email" onkeydown="if(event.key==='Enter')gateDoAuth()">
+    </div>
+    <div class="fg" style="margin-bottom:14px">
+      <label class="fl">Password</label>
+      <input id="gate-pass" class="fc" type="password" placeholder="••••••••" autocomplete="current-password" onkeydown="if(event.key==='Enter')gateDoAuth()">
+    </div>
+    <div id="gate-err" style="color:var(--err);font-size:.78rem;margin-bottom:10px;font-weight:600;display:none"></div>
+    <button id="gate-btn" class="btn bp" style="width:100%;justify-content:center;padding:12px 0;font-size:.88rem" onclick="gateDoAuth()">Sign In →</button>
+    <div style="text-align:center;margin-top:13px;font-size:.77rem;color:var(--muted)">
+      <span id="gate-mode-msg">Don't have an account?</span>
+      <button id="gate-toggle" style="background:none;border:none;color:var(--p);font-weight:700;cursor:pointer;font-size:.77rem;margin-left:4px" onclick="gateToggleMode()">Sign Up</button>
+    </div>
+    <div style="text-align:center;margin-top:7px">
+      <button style="background:none;border:none;color:var(--lt);font-size:.71rem;cursor:pointer;text-decoration:underline" onclick="gateForgotPassword()">Forgot password?</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════
+     PROFILE WIZARD — shown after first login (new users only)
+     ═══════════════════════════════════════════════════════════ -->
+<div id="profile-wizard" style="display:none;position:fixed;inset:0;background:rgba(15,20,40,.82);z-index:8000;align-items:center;justify-content:center;backdrop-filter:blur(6px)">
+  <div style="background:var(--surf);border-radius:var(--r2x);width:92%;max-width:520px;padding:32px;box-shadow:0 24px 60px rgba(15,20,40,.4);animation:mdIn .3s ease;position:relative;max-height:90vh;overflow-y:auto">
+
+    <!-- Step 1: Name + Workspace type -->
+    <div id="pw-s1">
+      <div style="text-align:center;margin-bottom:22px">
+        <div style="font-size:2.2rem;margin-bottom:8px">👋</div>
+        <div style="font-family:var(--ffd);font-size:1.25rem;font-weight:800">Welcome! Let's set up your profile</div>
+        <div style="color:var(--muted);font-size:.8rem;margin-top:5px">Takes about 60 seconds</div>
+      </div>
+      <div class="fg" style="margin-bottom:16px">
+        <label class="fl">Your Full Name *</label>
+        <input id="pw-name" class="fc" placeholder="e.g. Ravi Sharma">
+      </div>
+      <div style="font-weight:600;font-size:.82rem;margin-bottom:10px;color:var(--text)">How will you use this app?</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:6px">
+        <div class="mode-card" onclick="pwSelectMode('personal')" id="pw-mc-personal" style="padding:16px 8px;text-align:center;cursor:pointer">
+          <div style="font-size:1.8rem">👤</div>
+          <div style="font-weight:700;font-size:.78rem;margin-top:6px">Personal</div>
+          <div style="font-size:.68rem;color:var(--muted);margin-top:3px;line-height:1.4">Just for me</div>
+        </div>
+        <div class="mode-card" onclick="pwSelectMode('create')" id="pw-mc-create" style="padding:16px 8px;text-align:center;cursor:pointer">
+          <div style="font-size:1.8rem">🏢</div>
+          <div style="font-weight:700;font-size:.78rem;margin-top:6px">Create Company</div>
+          <div style="font-size:.68rem;color:var(--muted);margin-top:3px;line-height:1.4">I'm the Admin</div>
+        </div>
+        <div class="mode-card" onclick="pwSelectMode('join')" id="pw-mc-join" style="padding:16px 8px;text-align:center;cursor:pointer">
+          <div style="font-size:1.8rem">🔗</div>
+          <div style="font-weight:700;font-size:.78rem;margin-top:6px">Join Company</div>
+          <div style="font-size:.68rem;color:var(--muted);margin-top:3px;line-height:1.4">I have invite code</div>
+        </div>
+      </div>
+      <div id="pw-s1-err" style="color:var(--err);font-size:.78rem;display:none;margin-top:6px"></div>
+    </div>
+
+    <!-- Step 2a: Create Company -->
+    <div id="pw-s2-create" style="display:none">
+      <div style="text-align:center;margin-bottom:20px">
+        <div style="font-size:1.8rem;margin-bottom:7px">🏢</div>
+        <div style="font-family:var(--ffd);font-size:1.1rem;font-weight:800">Create Company Workspace</div>
+        <div style="color:var(--muted);font-size:.79rem;margin-top:4px">You'll be the Admin — add positions &amp; invite members from Admin Console</div>
+      </div>
+      <div class="fg" style="margin-bottom:11px">
+        <label class="fl">Organization Name *</label>
+        <input id="pw-org" class="fc" placeholder="e.g. Acme Corporation">
+      </div>
+      <div class="fg" style="margin-bottom:16px">
+        <label class="fl">Your Position / Title *</label>
+        <input id="pw-pos-create" class="fc" placeholder="e.g. Director, CEO, Manager">
+      </div>
+      <div id="pw-s2c-err" style="color:var(--err);font-size:.78rem;display:none;margin-bottom:8px"></div>
+      <div style="display:flex;gap:8px;justify-content:space-between;margin-top:4px">
+        <button class="btn bo" onclick="pwBack()">← Back</button>
+        <button class="btn bp" onclick="pwCreateCompany()">Create Workspace 🚀</button>
+      </div>
+    </div>
+
+    <!-- Step 2b: Join Company -->
+    <div id="pw-s2-join" style="display:none">
+      <div style="text-align:center;margin-bottom:20px">
+        <div style="font-size:1.8rem;margin-bottom:7px">🔗</div>
+        <div style="font-family:var(--ffd);font-size:1.1rem;font-weight:800">Join a Company</div>
+        <div style="color:var(--muted);font-size:.79rem;margin-top:4px">Ask your Admin for the invite code</div>
+      </div>
+      <div class="fg" style="margin-bottom:11px">
+        <label class="fl">Invite Code *</label>
+        <div style="display:flex;gap:8px">
+          <input id="pw-invite-code" class="fc" placeholder="e.g. ABC123" style="text-transform:uppercase;letter-spacing:.12em;font-weight:700" oninput="this.value=this.value.toUpperCase().replace(/[^A-Z0-9]/g,'')">
+          <button class="btn bp" onclick="pwValidateInvite()" style="white-space:nowrap;flex-shrink:0">Validate →</button>
+        </div>
+      </div>
+      <div id="pw-invite-info" style="display:none;background:rgba(16,185,129,.08);border:1px solid rgba(16,185,129,.3);border-radius:var(--r);padding:11px;margin-bottom:11px;font-size:.82rem">
+        <span style="color:#10B981;font-weight:700">✅ Valid invite!</span>
+        <span id="pw-invite-company" style="margin-left:6px;color:var(--text);font-weight:700"></span>
+      </div>
+      <div class="fg" id="pw-pos-wrap" style="display:none;margin-bottom:14px">
+        <label class="fl">Your Position *</label>
+        <select id="pw-pos-join" class="fc"></select>
+      </div>
+      <div id="pw-s2j-err" style="color:var(--err);font-size:.78rem;display:none;margin-bottom:8px"></div>
+      <div style="display:flex;gap:8px;justify-content:space-between;margin-top:4px">
+        <button class="btn bo" onclick="pwBack()">← Back</button>
+        <button class="btn bp" id="pw-join-btn" style="display:none" onclick="pwJoinCompany()">Join Workspace 🚀</button>
+      </div>
+    </div>
+
+  </div>
+</div>
+
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 <script src="https://cdn.quilljs.com/1.3.6/quill.min.js"></script>
+<!-- Firebase SDK (compat v9) — loaded only when config is saved -->
+<script>
+// ── Hardcoded Firebase config ──────────────────────────────────────────────
+const FB_CONFIG = {
+  apiKey:            "AIzaSyBqYtixweqfrdeWx5Im6IhPDYin5a5ASCk",
+  authDomain:        "miyeetask.firebaseapp.com",
+  projectId:         "miyeetask",
+  storageBucket:     "miyeetask.firebasestorage.app",
+  messagingSenderId: "145539237762",
+  appId:             "1:145539237762:web:85c434e104bf1ebe3f719b"
+};
+
+// ── Email whitelist ────────────────────────────────────────────────────────
+// Add authorised email addresses below. Only these users can sign in.
+// Leave the array EMPTY [] to allow ANY registered account (open access).
+const FB_ALLOWED_EMAILS = [
+  // "vipin@example.com",
+  // "colleague@yourcompany.com",
+];
+// Load Firebase SDKs (always — config is baked in)
+(function(){
+  const sdks = [
+    'https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js',
+    'https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js',
+    'https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js'
+  ];
+  sdks.forEach(src => {
+    const s = document.createElement('script');
+    s.src = src; s.async = false;
+    document.head.appendChild(s);
+  });
+})();
+</script>
 <script>
 /* ══════════════════════════════════════
    DATA & CONSTANTS
@@ -974,6 +1334,8 @@ const P_CFG = {
 };
 const S_CFG = {
   todo:        {label:'To Do',       cls:'btd', cal:'#9CA3AF'},
+  assigned:    {label:'Assigned',    cls:'bsa', cal:'#8B5CF6'},
+  accepted:    {label:'Accepted',    cls:'bsac',cal:'#06B6D4'},
   in_progress: {label:'In Progress', cls:'bip', cal:'#3B82F6'},
   review:      {label:'In Review',   cls:'brv', cal:'#F59E0B'},
   done:        {label:'Done',        cls:'bdn', cal:'#10B981'}
@@ -995,6 +1357,19 @@ const SEED = {
     {id:4,projectId:2,title:'Python Basics Complete',  status:'done',       priority:'low',   startDate:'2026-04-01',deadline:'2026-04-10',notes:'<p>Completed successfully!</p>',estHours:5,actualHours:6,completedAt:'2026-04-10T12:00:00.000Z',subtasks:[],gcalEventId:null,tags:['coding'],recurrence:'none',blockedBy:[],timerStart:null,timerTotal:0}
   ]
 };
+
+/* ══════════════════════════════════════
+   WORKSPACE / MULTI-USER
+══════════════════════════════════════ */
+const WS_ROLES = ['Director','President','AVP','Senior Manager','Manager','Executive'];
+const WS_KEY = 'tm_workspace';
+const WS_MODE_KEY = 'tm_mode';
+const WS_CUR_KEY = 'tm_cur_user';
+let WS_MODE = localStorage.getItem(WS_MODE_KEY) || null;
+let WS = (function(){ try{ const s=localStorage.getItem(WS_KEY); if(s) return JSON.parse(s); }catch(e){} return {orgName:'',users:[]}; })();
+let WS_CUR_USER = (function(){ try{ const s=localStorage.getItem(WS_CUR_KEY); if(s) return JSON.parse(s); }catch(e){} return null; })();
+function saveWorkspace(){ localStorage.setItem(WS_KEY, JSON.stringify(WS)); }
+function saveCurrentUser(){ localStorage.setItem(WS_CUR_KEY, JSON.stringify(WS_CUR_USER)); }
 
 let D = loadData();
 let currentView = 'list';
@@ -1048,11 +1423,18 @@ function migrateData(d){
     blockedBy:   [],
     timerStart:  null,
     timerTotal:  0,
+    // ── Multi-user / assignment fields (added Round 6) ──
+    assignedTo:  null,   // Firebase UID of assigned member
+    assignedBy:  null,   // Firebase UID of person who assigned the task
+    assignedAt:  null,   // Timestamp when task was assigned
+    createdBy:   null,   // Firebase UID of task creator
+    acceptedAt:  null,   // Timestamp when assigned user accepted the task
+    startedAt:   null,   // Timestamp when task moved to in_progress
     ...t
   }));
   return d;
 }
-function save(){ localStorage.setItem(SK, JSON.stringify(D)); }
+function save(){ localStorage.setItem(SK, JSON.stringify(D)); fbScheduleSync(); }
 function newId(){ return Date.now() + Math.floor(Math.random()*999); }
 function todayStr(){ return new Date().toISOString().split('T')[0]; }
 function fmtDate(s){ return s ? s.split('-').reverse().join('/') : ''; }
@@ -1101,6 +1483,24 @@ function showPage(id){
   renderSettings();
   renderMyDay();
   if(id === 'profile') renderProfilePage();
+  if(id === 'admin'){
+    renderAdmin();                          // immediate render from cached state
+    if(WS_MODE === 'company') fbRefreshAdminData(); // async refresh from Firestore
+  }
+}
+
+/* ══════════════════════════════════════
+   ADMIN DATA REFRESH (async Firestore)
+══════════════════════════════════════ */
+/** Reload members, positions and invites from Firestore then re-render admin page. */
+async function fbRefreshAdminData(){
+  if(!_fbFS || !_fbUser || !WS.wsId) return;
+  try {
+    await Promise.all([fbLoadMembers(), fbLoadPositions()]);
+    const me = _wsMembers.find(m => m.uid === _fbUser.uid);
+    if(me && me.isAdmin) await fbLoadInvites();
+    renderAdmin();
+  } catch(e){ console.warn('Admin refresh failed:', e); }
 }
 
 /* ══════════════════════════════════════
@@ -1387,6 +1787,7 @@ function delVision(id){
   confirmAction('Delete goal? Linked projects will be unlinked.', ()=>{
     D.visions = D.visions.filter(v => v.id !== id);
     D.projects.forEach(p => { if(p.visionId == id) p.visionId = ''; });
+    _fbPendingDel.visions.add(String(id));
     save(); renderAll(); toast('Goal deleted.','info');
   });
 }
@@ -1412,6 +1813,7 @@ function delProject(id){
   confirmAction('Delete project? Linked tasks will be unlinked.', ()=>{
     D.projects = D.projects.filter(p => p.id !== id);
     D.tasks.forEach(t => { if(t.projectId == id) t.projectId = null; });
+    _fbPendingDel.projects.add(String(id));
     save(); renderAll(); toast('Project deleted.','info');
   });
 }
@@ -1630,12 +2032,29 @@ function buildTaskCard(t){
         ${(+t.estHours||+t.actualHours)?`<span class="bdg bhr ${hourOver?'over':''}">⏱ ${(+t.actualHours||0)}/${(+t.estHours||0)}h</span>`:''}
         ${subTotal?`<span class="bdg btd">☑ ${subDone}/${subTotal}</span>`:''}
         ${(t.tags||[]).map(tg=>`<span class="tag">#${esc(tg)}</span>`).join('')}
+        ${(()=>{
+          if(!t.assignedTo || WS_MODE!=='company') return '';
+          const m = _wsMembers.find(x=>x.uid===t.assignedTo) || (WS.users||[]).find(x=>x.id===t.assignedTo);
+          if(!m) return '';
+          const initials = (m.initials || (m.name||'?').slice(0,2)).toUpperCase();
+          const bg = m.avatarColor||'linear-gradient(135deg,#5B6EF5,#7C3AED)';
+          return `<span class="user-av-sm" style="background:${bg}" title="Assigned: ${esc(m.name)}">${esc(initials)}</span>`;
+        })()}
       </div>
       <div class="tact">
+        ${(()=>{
+          // Show Accept button only for the assigned user when status = 'assigned'
+          if(t.status==='assigned' && _fbUser && t.assignedTo===_fbUser.uid){
+            return `<button class="btn bp bsm" onclick="acceptTask(${t.id})" style="background:linear-gradient(135deg,#10B981,#06B6D4)">🤝 Accept Task</button>`;
+          }
+          return '';
+        })()}
         <button class="timer-btn ${timerRunning?'running':''}" onclick="toggleTimer(${t.id})">${timerRunning?'⏹ '+elapsed:'▶ Timer'}</button>
         <button class="btn bo bsm" onclick="viewNotes(${t.id})">📄 Detail</button>
         <select class="tss" onchange="updateStatus(${t.id},this.value)">
           <option value="todo"        ${t.status==='todo'       ?'selected':''}>To Do</option>
+          <option value="assigned"    ${t.status==='assigned'   ?'selected':''}>Assigned</option>
+          <option value="accepted"    ${t.status==='accepted'   ?'selected':''}>Accepted</option>
           <option value="in_progress" ${t.status==='in_progress'?'selected':''}>In Progress</option>
           <option value="review"      ${t.status==='review'     ?'selected':''}>In Review</option>
           <option value="done"        ${t.status==='done'       ?'selected':''}>Done</option>
@@ -1668,6 +2087,8 @@ function updateStatus(id, status){
   t.status = status;
   if(status === 'done' && !t.completedAt) t.completedAt = new Date().toISOString();
   if(status !== 'done') t.completedAt = null;
+  // Record when work actually starts
+  if(status === 'in_progress' && !t.startedAt) t.startedAt = Date.now();
   save(); renderTasks(); renderDashboard(); renderMyDay(); renderVisionsPage();
 }
 function toggleComplete(id){
@@ -1708,11 +2129,14 @@ function inlineEditTitle(el, id){
 function deleteTask(id){
   confirmAction('Permanently delete this task?', ()=>{
     D.tasks = D.tasks.filter(t => t.id !== id);
+    _fbPendingDel.tasks.add(String(id));
     save(); renderAll(); toast('Task deleted.','info');
   });
 }
 
-// Drag & drop
+/* ══════════════════════════════════════
+   DRAG & DROP (Kanban board)
+══════════════════════════════════════ */
 let dragId = null;
 function drag(e, id){ dragId = id; e.dataTransfer.effectAllowed = 'move'; }
 function allowDrop(e){ e.preventDefault(); e.currentTarget.classList.add('dov'); }
@@ -1737,6 +2161,23 @@ function openTaskModal(taskId=null, presetDate=null){
   tp.innerHTML = '<option value="">— No Project —</option>' +
     D.projects.map(p => `<option value="${p.id}">${esc(p.title)}</option>`).join('');
 
+  // Populate assign-to dropdown (company mode only, non-admin members)
+  const at = document.getElementById('t-assignedto');
+  const atWrap = document.getElementById('t-assignto-wrap');
+  const assignableMembers = _wsMembers.filter(m => !m.isAdmin);
+  if(WS_MODE === 'company' && assignableMembers.length) {
+    atWrap.style.display = '';
+    at.innerHTML = '<option value="">— Unassigned —</option>' +
+      assignableMembers.map(m => `<option value="${m.uid}">${esc(m.name)} (${esc(m.position||m.role||'')})</option>`).join('');
+  } else if(WS_MODE === 'company' && (WS.users||[]).filter(u=>!u.isAdmin).length) {
+    // Fallback to local WS.users if Firestore members not loaded yet
+    atWrap.style.display = '';
+    at.innerHTML = '<option value="">— Unassigned —</option>' +
+      (WS.users||[]).filter(u=>!u.isAdmin).map(u => `<option value="${u.id}">${esc(u.name)} (${esc(u.role||'')})</option>`).join('');
+  } else {
+    atWrap.style.display = 'none';
+  }
+
   const fb = document.getElementById('t-editor-fallback');
   if(taskId){
     const t = D.tasks.find(x => x.id === taskId);
@@ -1756,6 +2197,7 @@ function openTaskModal(taskId=null, presetDate=null){
     if(quillInst) quillInst.root.innerHTML = t.notes || '';
     if(fb) fb.value = (t.notes||'').replace(/<[^>]+>/g,'');
     renderTagWrap(t.tags||[]);
+    if(at) at.value = t.assignedTo || '';
   } else {
     document.getElementById('modal-title').textContent = '✨ New Task';
     document.getElementById('t-title').value      = '';
@@ -1792,6 +2234,7 @@ function saveTask(){
   const act        = +document.getElementById('t-act').value || 0;
   const recurrence = document.getElementById('t-recurrence').value;
   const blockedBy  = document.getElementById('t-blocked').value.split(',').map(s=>+s.trim()).filter(Boolean);
+  const assignedTo = document.getElementById('t-assignedto').value || null;
   const tags       = _editTags.slice();
   const errEl   = document.getElementById('modal-err');
   const box     = document.querySelector('#task-modal .mbox');
@@ -1810,12 +2253,40 @@ function saveTask(){
     if(fb) notes = fb.value;
   }
   const completedAt = status==='done' ? (new Date().toISOString()) : null;
+  const actorUid    = _fbUser?.uid || null;
   if(editingId){
     const idx = D.tasks.findIndex(t => t.id === editingId);
-    if(idx >= 0) D.tasks[idx] = {...D.tasks[idx], title, projectId:projId?parseInt(projId):null, priority:prio, status, startDate, deadline:ddl, notes, estHours:est, actualHours:act, recurrence, blockedBy, tags, completedAt: status==='done'?(D.tasks[idx].completedAt||completedAt):null};
+    if(idx >= 0){
+      const prev = D.tasks[idx];
+      // Detect assignment change — update assignedBy / assignedAt when assignedTo changes
+      const assignmentChanged = assignedTo !== (prev.assignedTo||null);
+      const newAssignedBy = assignmentChanged ? (assignedTo ? actorUid : null) : (prev.assignedBy||null);
+      const newAssignedAt = assignmentChanged ? (assignedTo ? Date.now() : null) : (prev.assignedAt||null);
+      D.tasks[idx] = {
+        ...prev,
+        title, projectId:projId?parseInt(projId):null, priority:prio, status,
+        startDate, deadline:ddl, notes, estHours:est, actualHours:act,
+        recurrence, blockedBy, tags,
+        assignedTo,  assignedBy: newAssignedBy, assignedAt: newAssignedAt,
+        createdBy:   prev.createdBy || actorUid,   // preserve original creator
+        acceptedAt:  status === 'assigned' ? null : (prev.acceptedAt||null), // clear if re-assigned
+        startedAt:   status === 'in_progress' && !prev.startedAt ? Date.now() : (prev.startedAt||null),
+        completedAt: status==='done' ? (prev.completedAt||completedAt) : null
+      };
+    }
     toast('Task updated!');
   } else {
-    D.tasks.push({id:newId(), title, projectId:projId?parseInt(projId):null, priority:prio, startDate, deadline:ddl, notes, status, estHours:est, actualHours:act, recurrence, blockedBy, tags, completedAt, subtasks:[], gcalEventId:null, timerStart:null, timerTotal:0});
+    D.tasks.push({
+      id:newId(), title, projectId:projId?parseInt(projId):null, priority:prio,
+      startDate, deadline:ddl, notes, status,
+      estHours:est, actualHours:act, recurrence, blockedBy, tags,
+      assignedTo,
+      assignedBy: assignedTo ? actorUid : null,  // who assigned it
+      assignedAt: assignedTo ? Date.now() : null, // when it was assigned
+      createdBy:  actorUid,                        // who created it
+      acceptedAt: null, startedAt: null,
+      completedAt, subtasks:[], gcalEventId:null, timerStart:null, timerTotal:0
+    });
     toast('Task added!');
   }
   save(); closeTaskModal(); renderAll();
@@ -1945,6 +2416,35 @@ function calToday(){
 ══════════════════════════════════════ */
 function renderSettings(){
   refreshGCalStatus();
+  // ── Workspace config card ──
+  const wsBody = document.getElementById('ws-config-body');
+  if(wsBody){
+    const isCompany = WS_MODE === 'company';
+    const modePill  = isCompany
+      ? `<span class="workspace-pill wp-company">🏢 Company / Team</span>`
+      : WS_MODE === 'personal'
+        ? `<span class="workspace-pill wp-personal">👤 Personal</span>`
+        : `<span class="workspace-pill" style="background:rgba(239,68,68,.1);color:#dc2626;border:1px solid rgba(239,68,68,.3)">⚠️ Not configured</span>`;
+    // Prefer Firestore member count; fall back to local WS.users
+    const memberCount = _wsMembers.length || (WS.users||[]).length;
+    wsBody.innerHTML = `
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px;flex-wrap:wrap">
+        ${modePill}
+        ${isCompany ? `<strong style="font-size:.88rem">${esc(WS.orgName||'')}</strong>` : ''}
+        ${isCompany ? `<span style="font-size:.78rem;color:var(--muted)">${memberCount} member${memberCount!==1?'s':''}</span>` : ''}
+      </div>
+      <div style="font-size:.8rem;color:var(--muted);margin-bottom:13px;line-height:1.6">
+        ${isCompany
+          ? `Company workspace — team members can be assigned tasks. <a href="#" onclick="showPage('admin');return false" style="color:var(--p);font-weight:700">Open Admin Console →</a>`
+          : WS_MODE === 'personal'
+            ? 'Personal mode — all tasks belong to you.'
+            : 'Workspace not configured. Complete profile setup via the Admin Console.'}
+      </div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap">
+        <button class="btn bp bsm" onclick="showPage('admin')">🛡️ Admin Console</button>
+      </div>`;
+  }
+  // ── Data overview ──
   const ov = document.getElementById('data-overview');
   if(!ov) return;
   const total = D.tasks.length;
@@ -2488,15 +2988,949 @@ function spawnRecurring(t){
 }
 
 /* ══════════════════════════════════════
+   FIREBASE — AUTH + FIRESTORE SYNC
+══════════════════════════════════════ */
+/* ── Firebase SDK handles (populated by fbInit) ── */
+let _fbApp  = null;   // FirebaseApp instance
+let _fbAuth = null;   // firebase.auth() handle
+let _fbFS   = null;   // firebase.firestore() handle
+let _fbUser = null;   // Currently authenticated firebase.User (null = signed out)
+
+/* ── Auth / Sync state ── */
+let _fbAuthMode = 'signin'; // legacy field — gate uses _gateMode; kept for fbDoAuth stub compat
+let _fbSyncTimer = null;    // debounce timer for fbSyncNow
+let _fbPendingDel = { visions: new Set(), projects: new Set(), tasks: new Set() }; // IDs to delete on next sync
+
+/* ── Workspace runtime cache (loaded from Firestore on login) ── */
+let _wsMembers   = [];   // {uid, name, email, position, isAdmin, initials, avatarColor}
+let _wsPositions = [];   // {id, name} — admin-created positions for this workspace
+let _wsInvites   = [];   // {code, wsName, createdAt, active, usedBy:[]} — admin-only view
+let _fbProfile   = null; // current user's Firestore profile doc data (users/{uid}/profile/main)
+let _pendingInviteData = null; // invite doc data held during step-2b of profile wizard
+
+// Called from save() — no-op if Firebase not active
+function fbScheduleSync(){
+  if(!_fbFS || !_fbUser) return;
+  clearTimeout(_fbSyncTimer);
+  _fbSyncTimer = setTimeout(fbSyncNow, 1500);
+}
+
+function fbHasConfig(){
+  return true; // config is hardcoded in FB_CONFIG — always available
+}
+
+/* ── Boot sequence (called once from window 'load' handler)
+   ┌─ fbInit()
+   │   └─ firebase.initializeApp(FB_CONFIG)
+   │   └─ _fbAuth.onAuthStateChanged → fbHandleAuthChange(user)
+   │       ├─ user == null  → show #login-gate (full-screen blocker)
+   │       └─ user != null  → hide #login-gate → fbCheckProfile(user)
+   │           ├─ profile exists  → fbLoadWorkspace() → renderAll()
+   │           └─ profile missing → show #profile-wizard (step 1)
+── */
+function fbInit(){
+  // Wait for SDK to be available (loaded asynchronously)
+  let attempts = 0;
+  const tryInit = () => {
+    if(!window.firebase){
+      if(++attempts < 20) setTimeout(tryInit, 250);
+      else console.warn('Firebase SDK did not load.');
+      return;
+    }
+    try {
+      if(!firebase.apps.length){
+        _fbApp = firebase.initializeApp(FB_CONFIG);
+      } else {
+        _fbApp = firebase.apps[0];
+      }
+      _fbAuth = firebase.auth();
+      _fbFS   = firebase.firestore();
+      _fbAuth.onAuthStateChanged(fbHandleAuthChange);
+    } catch(e){
+      console.warn('Firebase init failed:', e);
+      toast('Firebase init error: ' + e.message, 'error');
+    }
+  };
+  tryInit();
+}
+
+function fbHandleAuthChange(user){
+  _fbUser = user;
+  if(user){
+    // ── Email whitelist check ─────────────────────────────────────────────
+    if(FB_ALLOWED_EMAILS.length > 0 &&
+       !FB_ALLOWED_EMAILS.map(e => e.toLowerCase()).includes(user.email.toLowerCase())){
+      firebase.auth().signOut();
+      _fbUser = null;
+      const err = document.getElementById('gate-err');
+      if(err){ err.textContent = '⛔ Access denied — ' + user.email + ' is not authorised.'; err.style.display = ''; }
+      document.getElementById('login-gate').style.display = 'flex';
+      toast('⛔ Access denied: ' + user.email, 'error');
+      return;
+    }
+    // ── Hide login gate ───────────────────────────────────────────────────
+    document.getElementById('login-gate').style.display = 'none';
+    // ── Check if profile exists in Firestore ─────────────────────────────
+    fbCheckProfile(user);
+    // ── Show synced badge ─────────────────────────────────────────────────
+    if(!document.getElementById('fb-sync-badge')){
+      const b = document.createElement('div');
+      b.id = 'fb-sync-badge';
+      b.title = 'Signed in as ' + user.email;
+      b.style.cssText = 'display:flex;align-items:center;gap:4px;padding:4px 10px;border-radius:99px;background:rgba(16,185,129,.15);color:#065f46;font-size:.7rem;font-weight:700;border:1px solid rgba(16,185,129,.3)';
+      b.innerHTML = '☁️ Synced';
+      const hdrR = document.querySelector('.hdr-r');
+      if(hdrR) hdrR.prepend(b);
+    }
+    fbAddSignOutBtn();
+  } else {
+    // ── Not logged in — show full-screen login gate ───────────────────────
+    document.getElementById('login-gate').style.display = 'flex';
+    document.getElementById('profile-wizard').style.display = 'none';
+    document.getElementById('fb-sync-badge')?.remove();
+    document.getElementById('fb-signout-btn')?.remove();
+    _wsMembers = []; _wsPositions = []; _wsInvites = []; _fbProfile = null;
+  }
+}
+
+function fbAddSignOutBtn(){
+  if(document.getElementById('fb-signout-btn')) return;
+  const sep = document.querySelector('.prof-drop-sep');
+  if(!sep) return;
+  const btn = document.createElement('button');
+  btn.id = 'fb-signout-btn';
+  btn.className = 'prof-drop-item';
+  btn.innerHTML = '🔓 Sign Out';
+  btn.onclick = () => { firebase.auth().signOut(); closeProfileDrop(); };
+  sep.parentNode.insertBefore(btn, sep);
+}
+
+/* ══════════════════════════════════════
+   PROFILE CHECK & WIZARD
+══════════════════════════════════════ */
+async function fbCheckProfile(user){
+  if(!_fbFS || !user) return;
+  try {
+    const profileDoc = await _fbFS.doc('users/' + user.uid + '/profile/main').get();
+    if(profileDoc.exists){
+      _fbProfile = profileDoc.data();
+      // Returning user — load their workspace data
+      await fbLoadWorkspace(_fbProfile);
+    } else {
+      // New user — show profile wizard
+      document.getElementById('profile-wizard').style.display = 'flex';
+    }
+  } catch(e){
+    console.warn('Profile check failed:', e);
+    // On error, show wizard so user can set up
+    document.getElementById('profile-wizard').style.display = 'flex';
+  }
+}
+
+async function fbLoadWorkspace(profile){
+  if(!profile) return;
+  if(profile.wsMode === 'company' && profile.wsId){
+    WS_MODE = 'company';
+    WS.orgName = profile.wsName || '';
+    WS.wsId    = profile.wsId;
+    localStorage.setItem(WS_MODE_KEY, WS_MODE);
+    saveWorkspace();
+    await Promise.all([fbLoadMembers(), fbLoadPositions()]);
+    // Find own member doc
+    const me = _wsMembers.find(m => m.uid === _fbUser.uid);
+    if(me) WS_CUR_USER = me;
+  } else {
+    WS_MODE = 'personal';
+    localStorage.setItem(WS_MODE_KEY, WS_MODE);
+  }
+  await fbLoadData();
+  renderAll();
+  updateWorkspaceUI();
+  updateHeaderProfile();
+  toast('☁️ Welcome back, ' + (profile.name||'') + '!', 'success');
+}
+
+/* ── Workspace sub-collection loaders ──────────────────────────────────────
+   All three require _fbFS, _fbUser and WS.wsId to be set.
+   fbRefreshAdminData() calls them together when the Admin page opens.
+── */
+async function fbLoadMembers(){
+  if(!_fbFS || !_fbUser || !WS.wsId) return;
+  try {
+    const snap = await _fbFS.collection('workspaces/' + WS.wsId + '/members').get();
+    _wsMembers = snap.docs.map(d => ({ uid: d.id, ...d.data() }));
+  } catch(e){ console.warn('Load members failed:', e); }
+}
+
+async function fbLoadPositions(){
+  if(!_fbFS || !_fbUser || !WS.wsId) return;
+  try {
+    const snap = await _fbFS.collection('workspaces/' + WS.wsId + '/positions').get();
+    _wsPositions = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+  } catch(e){ console.warn('Load positions failed:', e); }
+}
+
+async function fbLoadInvites(){
+  if(!_fbFS || !_fbUser || !WS.wsId) return;
+  const me = _wsMembers.find(m => m.uid === _fbUser.uid);
+  if(!me || !me.isAdmin) return;
+  try {
+    const snap = await _fbFS.collection('invites')
+      .where('wsId','==',WS.wsId).get();
+    _wsInvites = snap.docs.map(d => ({ code: d.id, ...d.data() }));
+  } catch(e){ console.warn('Load invites failed:', e); }
+}
+
+/* ══════════════════════════════════════
+   PROFILE WIZARD LOGIC
+══════════════════════════════════════ */
+let _pwMode = null; // 'personal' | 'create' | 'join'
+
+function pwSelectMode(mode){
+  _pwMode = mode;
+  // Highlight selected card
+  ['personal','create','join'].forEach(m => {
+    const card = document.getElementById('pw-mc-'+m);
+    if(card) card.classList.toggle('selected', m === mode);
+  });
+  // Auto-advance
+  document.getElementById('pw-s1').style.display = 'none';
+  document.getElementById('pw-s2-create').style.display = mode === 'create' ? '' : 'none';
+  document.getElementById('pw-s2-join').style.display   = mode === 'join'   ? '' : 'none';
+  if(mode === 'personal') pwFinishPersonal();
+}
+
+function pwBack(){
+  _pwMode = null;
+  _pendingInviteData = null;
+  document.getElementById('pw-s1').style.display = '';
+  document.getElementById('pw-s2-create').style.display = 'none';
+  document.getElementById('pw-s2-join').style.display   = 'none';
+  document.getElementById('pw-invite-info').style.display  = 'none';
+  document.getElementById('pw-pos-wrap').style.display     = 'none';
+  document.getElementById('pw-join-btn').style.display     = 'none';
+  ['personal','create','join'].forEach(m => {
+    const card = document.getElementById('pw-mc-'+m);
+    if(card) card.classList.remove('selected');
+  });
+}
+
+async function pwFinishPersonal(){
+  const name = document.getElementById('pw-name').value.trim();
+  if(!name){
+    document.getElementById('pw-s1').style.display = '';
+    document.getElementById('pw-s2-create').style.display = 'none';
+    document.getElementById('pw-s2-join').style.display   = 'none';
+    const err = document.getElementById('pw-s1-err');
+    err.textContent = 'Please enter your name first.'; err.style.display = '';
+    return;
+  }
+  const profile = {
+    uid: _fbUser.uid, name,
+    initials: name.split(' ').map(w=>w[0]).join('').toUpperCase().slice(0,2)||'ME',
+    email: _fbUser.email, wsMode: 'personal', createdAt: Date.now()
+  };
+  await _fbFS.doc('users/' + _fbUser.uid + '/profile/main').set(profile);
+  _fbProfile = profile;
+  WS_MODE = 'personal';
+  localStorage.setItem(WS_MODE_KEY, WS_MODE);
+  saveWorkspace();
+  document.getElementById('profile-wizard').style.display = 'none';
+  let p = JSON.parse(localStorage.getItem('tm_profile')||'{}');
+  p.name = name; p.initials = profile.initials; p.email = _fbUser.email;
+  localStorage.setItem('tm_profile', JSON.stringify(p));
+  updateWorkspaceUI(); updateHeaderProfile(); renderProfilePage();
+  toast('🚀 Welcome, ' + name + '!', 'success');
+}
+
+async function pwCreateCompany(){
+  const name = document.getElementById('pw-name').value.trim();
+  const org  = document.getElementById('pw-org').value.trim();
+  const pos  = document.getElementById('pw-pos-create').value.trim();
+  const errEl= document.getElementById('pw-s2c-err');
+  if(!name){ errEl.textContent='Go back and enter your name first'; errEl.style.display=''; return; }
+  if(!org){  errEl.textContent='Organization name is required'; errEl.style.display=''; return; }
+  if(!pos){  errEl.textContent='Your position is required'; errEl.style.display=''; return; }
+  errEl.style.display = 'none';
+  const wsId = org.replace(/[^a-z0-9]/gi,'_').toLowerCase() + '_' + _fbUser.uid.slice(0,8);
+  const initials = name.split(' ').map(w=>w[0]).join('').toUpperCase().slice(0,2)||'AD';
+  const adminMember = {
+    uid: _fbUser.uid, name, email: _fbUser.email,
+    position: pos, isAdmin: true, initials,
+    avatarColor: 'linear-gradient(135deg,#5B6EF5,#7C3AED)',
+    joinedAt: Date.now()
+  };
+  const profile = {
+    uid: _fbUser.uid, name, initials, email: _fbUser.email,
+    wsMode: 'company', wsId, wsName: org, position: pos, isAdmin: true, createdAt: Date.now()
+  };
+  try {
+    const batch = _fbFS.batch();
+    batch.set(_fbFS.doc('workspaces/' + wsId), { orgName: org, createdBy: _fbUser.uid, wsId, createdAt: Date.now() });
+    batch.set(_fbFS.doc('workspaces/' + wsId + '/members/' + _fbUser.uid), adminMember);
+    batch.set(_fbFS.doc('users/' + _fbUser.uid + '/profile/main'), profile);
+    // Seed one default position
+    const posId = 'pos_' + Date.now();
+    batch.set(_fbFS.doc('workspaces/' + wsId + '/positions/' + posId), { name: pos, createdBy: _fbUser.uid, createdAt: Date.now() });
+    await batch.commit();
+    _fbProfile = profile;
+    _wsMembers = [adminMember];
+    _wsPositions = [{ id: posId, name: pos }];
+    WS_MODE = 'company'; WS = { orgName: org, wsId, users: [] };
+    WS_CUR_USER = { ...adminMember, id: _fbUser.uid };
+    localStorage.setItem(WS_MODE_KEY, WS_MODE);
+    saveWorkspace(); saveCurrentUser();
+    let p = JSON.parse(localStorage.getItem('tm_profile')||'{}');
+    p.name = name; p.initials = initials; p.email = _fbUser.email; p.org = org;
+    localStorage.setItem('tm_profile', JSON.stringify(p));
+    document.getElementById('profile-wizard').style.display = 'none';
+    await fbLoadData();
+    renderAll(); updateWorkspaceUI(); updateHeaderProfile(); renderProfilePage();
+    toast('🏢 Workspace "' + org + '" created! You\'re the Admin.', 'success');
+  } catch(e){
+    errEl.textContent = 'Error creating workspace: ' + e.message; errEl.style.display = '';
+  }
+}
+
+async function pwValidateInvite(){
+  const code = document.getElementById('pw-invite-code').value.trim().toUpperCase();
+  const errEl = document.getElementById('pw-s2j-err');
+  errEl.style.display = 'none';
+  document.getElementById('pw-invite-info').style.display = 'none';
+  document.getElementById('pw-pos-wrap').style.display = 'none';
+  document.getElementById('pw-join-btn').style.display = 'none';
+  if(!code){ errEl.textContent = 'Please enter an invite code'; errEl.style.display = ''; return; }
+  try {
+    const doc = await _fbFS.doc('invites/' + code).get();
+    if(!doc.exists || !doc.data().active){
+      errEl.textContent = '❌ Invalid or expired invite code'; errEl.style.display = ''; return;
+    }
+    const inv = doc.data();
+    _pendingInviteData = { code, ...inv };
+    document.getElementById('pw-invite-info').style.display = '';
+    document.getElementById('pw-invite-company').textContent = inv.wsName;
+    // Load positions for this workspace
+    const posSnap = await _fbFS.collection('workspaces/' + inv.wsId + '/positions').get();
+    const positions = posSnap.docs.map(d => ({ id: d.id, ...d.data() }));
+    const sel = document.getElementById('pw-pos-join');
+    if(positions.length){
+      sel.innerHTML = positions.map(p => `<option value="${esc(p.name)}">${esc(p.name)}</option>`).join('');
+      document.getElementById('pw-pos-wrap').style.display = '';
+    } else {
+      sel.innerHTML = '<option value="">— No positions defined —</option>';
+      document.getElementById('pw-pos-wrap').style.display = '';
+    }
+    document.getElementById('pw-join-btn').style.display = '';
+    toast('✅ Invite valid for ' + inv.wsName, 'success');
+  } catch(e){
+    errEl.textContent = 'Validation error: ' + e.message; errEl.style.display = '';
+  }
+}
+
+async function pwJoinCompany(){
+  if(!_pendingInviteData){ toast('Please validate an invite code first','error'); return; }
+  const name  = document.getElementById('pw-name').value.trim();
+  const pos   = document.getElementById('pw-pos-join').value;
+  const errEl = document.getElementById('pw-s2j-err');
+  if(!name){ errEl.textContent = 'Go back and enter your name first'; errEl.style.display = ''; return; }
+  if(!pos){  errEl.textContent = 'Please select a position'; errEl.style.display = ''; return; }
+  errEl.style.display = 'none';
+  const { wsId, wsName, code } = _pendingInviteData;
+  const initials = name.split(' ').map(w=>w[0]).join('').toUpperCase().slice(0,2)||'ME';
+  const colors = ['linear-gradient(135deg,#10B981,#06B6D4)','linear-gradient(135deg,#F59E0B,#F97316)',
+    'linear-gradient(135deg,#8B5CF6,#EC4899)','linear-gradient(135deg,#EF4444,#F97316)'];
+  const memberData = {
+    uid: _fbUser.uid, name, email: _fbUser.email,
+    position: pos, isAdmin: false, initials,
+    avatarColor: colors[Math.floor(Math.random()*colors.length)],
+    joinedAt: Date.now()
+  };
+  const profile = {
+    uid: _fbUser.uid, name, initials, email: _fbUser.email,
+    wsMode: 'company', wsId, wsName, position: pos, isAdmin: false, createdAt: Date.now()
+  };
+  try {
+    const batch = _fbFS.batch();
+    batch.set(_fbFS.doc('workspaces/' + wsId + '/members/' + _fbUser.uid), memberData);
+    batch.set(_fbFS.doc('users/' + _fbUser.uid + '/profile/main'), profile);
+    // Mark invite as used (append uid)
+    batch.update(_fbFS.doc('invites/' + code), {
+      usedBy: firebase.firestore.FieldValue.arrayUnion(_fbUser.uid)
+    });
+    await batch.commit();
+    _fbProfile = profile;
+    WS_MODE = 'company'; WS = { orgName: wsName, wsId, users: [] };
+    WS_CUR_USER = { ...memberData, id: _fbUser.uid };
+    localStorage.setItem(WS_MODE_KEY, WS_MODE);
+    saveWorkspace(); saveCurrentUser();
+    let p = JSON.parse(localStorage.getItem('tm_profile')||'{}');
+    p.name = name; p.initials = initials; p.email = _fbUser.email; p.org = wsName;
+    localStorage.setItem('tm_profile', JSON.stringify(p));
+    document.getElementById('profile-wizard').style.display = 'none';
+    _pendingInviteData = null;
+    await Promise.all([fbLoadMembers(), fbLoadPositions(), fbLoadData()]);
+    renderAll(); updateWorkspaceUI(); updateHeaderProfile(); renderProfilePage();
+    toast('🎉 You joined ' + wsName + ' as ' + pos + '!', 'success');
+  } catch(e){
+    errEl.textContent = 'Error joining workspace: ' + e.message; errEl.style.display = '';
+  }
+}
+
+/* ══════════════════════════════════════
+   LOGIN GATE AUTH
+══════════════════════════════════════ */
+let _gateMode = 'signin';
+async function gateDoAuth(){
+  const email = document.getElementById('gate-email').value.trim();
+  const pass  = document.getElementById('gate-pass').value;
+  const errEl = document.getElementById('gate-err');
+  const btn   = document.getElementById('gate-btn');
+  errEl.style.display = 'none';
+  if(!email || !pass){ errEl.textContent='Email and password are required'; errEl.style.display=''; return; }
+  btn.textContent = '⏳ Please wait…'; btn.disabled = true;
+  try {
+    if(_gateMode === 'signin'){
+      await _fbAuth.signInWithEmailAndPassword(email, pass);
+    } else {
+      await _fbAuth.createUserWithEmailAndPassword(email, pass);
+    }
+    document.getElementById('gate-pass').value = '';
+  } catch(e){
+    errEl.textContent = fbAuthErrMsg(e.code);
+    errEl.style.display = '';
+    btn.textContent = _gateMode === 'signin' ? 'Sign In →' : 'Create Account →';
+    btn.disabled = false;
+  }
+}
+function gateToggleMode(){
+  _gateMode = _gateMode === 'signin' ? 'signup' : 'signin';
+  const isSignin = _gateMode === 'signin';
+  document.getElementById('gate-title').textContent   = isSignin ? 'Sign In' : 'Create Account';
+  document.getElementById('gate-btn').textContent     = isSignin ? 'Sign In →' : 'Create Account →';
+  document.getElementById('gate-btn').disabled        = false;
+  document.getElementById('gate-mode-msg').textContent= isSignin ? "Don't have an account?" : 'Already have an account?';
+  document.getElementById('gate-toggle').textContent  = isSignin ? 'Sign Up' : 'Sign In';
+  document.getElementById('gate-err').style.display   = 'none';
+}
+async function gateForgotPassword(){
+  const email = document.getElementById('gate-email').value.trim();
+  if(!email){ const e=document.getElementById('gate-err'); e.textContent='Enter your email first'; e.style.display=''; return; }
+  try {
+    await _fbAuth.sendPasswordResetEmail(email);
+    toast('📧 Password reset email sent to ' + email, 'success');
+  } catch(e){
+    const errEl = document.getElementById('gate-err');
+    errEl.textContent = fbAuthErrMsg(e.code); errEl.style.display = '';
+  }
+}
+
+/* ══════════════════════════════════════
+   ADMIN: POSITIONS MANAGER
+══════════════════════════════════════ */
+async function adminAddPosition(){
+  const input = document.getElementById('new-pos-input');
+  const name = (input.value||'').trim();
+  if(!name) return;
+  if(!WS.wsId){ toast('No company workspace active','error'); return; }
+  const posId = 'pos_' + Date.now();
+  try {
+    await _fbFS.doc('workspaces/' + WS.wsId + '/positions/' + posId)
+      .set({ name, createdBy: _fbUser.uid, createdAt: Date.now() });
+    _wsPositions.push({ id: posId, name });
+    input.value = '';
+    renderAdminPositions();
+    toast('✅ Position "' + name + '" added', 'success');
+  } catch(e){ toast('Error: ' + e.message, 'error'); }
+}
+
+async function adminDeletePosition(posId){
+  if(!WS.wsId) return;
+  confirmAction('Delete this position?', async () => {
+    try {
+      await _fbFS.doc('workspaces/' + WS.wsId + '/positions/' + posId).delete();
+      _wsPositions = _wsPositions.filter(p => p.id !== posId);
+      renderAdminPositions();
+      toast('Position deleted', 'info');
+    } catch(e){ toast('Error: ' + e.message, 'error'); }
+  });
+}
+
+function renderAdminPositions(){
+  const list  = document.getElementById('positions-list');
+  const badge = document.getElementById('pos-count-badge');
+  const wrap  = document.getElementById('add-pos-wrap');
+  const isAdmin = _wsMembers.find(m=>m.uid===(_fbUser&&_fbUser.uid))?.isAdmin || false;
+  if(badge) badge.textContent = _wsPositions.length + ' total';
+  if(wrap) wrap.style.display = isAdmin ? 'flex' : 'none';
+  if(!list) return;
+  if(!_wsPositions.length){
+    list.innerHTML = `<div style="color:var(--muted);font-size:.8rem;padding:10px 0">No positions yet. ${isAdmin?'Add one below.':''}</div>`;
+    return;
+  }
+  list.innerHTML = _wsPositions.map(p => `
+    <div style="display:flex;align-items:center;justify-content:space-between;padding:8px 10px;background:var(--surf2);border-radius:var(--r);border:1px solid var(--bd);margin-bottom:6px">
+      <span style="font-size:.84rem;font-weight:600">📋 ${esc(p.name)}</span>
+      ${isAdmin ? `<button class="bic bic-red" onclick="adminDeletePosition('${p.id}')" title="Delete position">🗑️</button>` : ''}
+    </div>`).join('');
+}
+
+/* ══════════════════════════════════════
+   ADMIN: INVITE CODES
+══════════════════════════════════════ */
+async function adminGenerateInvite(){
+  if(!WS.wsId){ toast('No company workspace active','error'); return; }
+  const code = Math.random().toString(36).slice(2,8).toUpperCase();
+  const invite = { wsId: WS.wsId, wsName: WS.orgName, createdBy: _fbUser.uid, createdAt: Date.now(), active: true, usedBy: [] };
+  try {
+    await _fbFS.doc('invites/' + code).set(invite);
+    _wsInvites.push({ code, ...invite });
+    renderAdminInvites();
+    toast('🔗 Invite code created: ' + code, 'success');
+  } catch(e){ toast('Error: ' + e.message, 'error'); }
+}
+
+async function adminDeleteInvite(code){
+  confirmAction('Deactivate invite code ' + code + '?', async () => {
+    try {
+      await _fbFS.doc('invites/' + code).update({ active: false });
+      _wsInvites = _wsInvites.filter(i => i.code !== code);
+      renderAdminInvites();
+      toast('Invite code deactivated', 'info');
+    } catch(e){ toast('Error: ' + e.message, 'error'); }
+  });
+}
+
+function copyInviteCode(code){
+  navigator.clipboard.writeText(code).then(()=>toast('📋 Code copied: ' + code, 'success')).catch(()=>{
+    prompt('Copy this invite code:', code);
+  });
+}
+
+function renderAdminInvites(){
+  const list = document.getElementById('invites-list');
+  if(!list) return;
+  if(!_wsInvites.length){
+    list.innerHTML = `<div style="color:var(--muted);font-size:.8rem;padding:6px 0">No invite codes yet. Click "Generate" to create one.</div>`;
+    return;
+  }
+  list.innerHTML = _wsInvites.filter(i=>i.active).map(i => `
+    <div style="display:flex;align-items:center;justify-content:space-between;padding:10px 12px;background:rgba(91,110,245,.06);border:1px solid rgba(91,110,245,.2);border-radius:var(--r);margin-bottom:7px;flex-wrap:wrap;gap:8px">
+      <div>
+        <span style="font-family:monospace;font-size:1.1rem;font-weight:800;letter-spacing:.12em;color:var(--p)">${esc(i.code)}</span>
+        <span style="font-size:.72rem;color:var(--muted);margin-left:8px">Used by ${(i.usedBy||[]).length} member${(i.usedBy||[]).length!==1?'s':''}</span>
+      </div>
+      <div style="display:flex;gap:6px">
+        <button class="btn bo bsm" onclick="copyInviteCode('${i.code}')">📋 Copy</button>
+        <button class="bic bic-red" onclick="adminDeleteInvite('${i.code}')" title="Deactivate">🗑️</button>
+      </div>
+    </div>`).join('');
+}
+
+/* ══════════════════════════════════════
+   TASK: ACCEPT
+══════════════════════════════════════ */
+function acceptTask(taskId){
+  const t = D.tasks.find(x => x.id === taskId);
+  if(!t) return;
+  if(!_fbUser || t.assignedTo !== _fbUser.uid){ toast('This task is not assigned to you','error'); return; }
+  t.status = 'accepted';
+  t.acceptedAt = Date.now();
+  save();
+  renderAll();
+  toast('🤝 Task accepted! Start when ready.', 'success');
+}
+
+/* ══════════════════════════════════════
+   FIREBASE — DATA SYNC
+   Firestore path layout:
+     Personal:  users/{uid}/{visions|projects|tasks}/{id}
+     Company:   workspaces/{wsId}/{visions|projects|tasks}/{id}
+   fbGetBase() returns the correct collection root.
+   fbLoadData()  — pulls Firestore → D (runs at login / first load)
+   fbPushAll()   — pushes D → Firestore (first ever login)
+   fbSyncNow()   — debounced write called from save()
+══════════════════════════════════════ */
+function fbGetBase(){
+  if(!_fbUser) return null;
+  if(WS_MODE === 'company' && WS.orgName){
+    if(!WS.wsId){
+      WS.wsId = WS.orgName.replace(/[^a-z0-9]/gi,'_').toLowerCase() + '_' + _fbUser.uid.slice(0,8);
+      saveWorkspace();
+    }
+    return 'workspaces/' + WS.wsId;
+  }
+  return 'users/' + _fbUser.uid;
+}
+
+async function fbLoadData(){
+  if(!_fbFS || !_fbUser) return;
+  const base = fbGetBase();
+  if(!base) return;
+  try {
+    const [vsSnap, prSnap, tkSnap] = await Promise.all([
+      _fbFS.collection(base + '/visions').get(),
+      _fbFS.collection(base + '/projects').get(),
+      _fbFS.collection(base + '/tasks').get()
+    ]);
+    const visions  = vsSnap.docs.map(d => d.data());
+    const projects = prSnap.docs.map(d => d.data());
+    const tasks    = tkSnap.docs.map(d => d.data());
+    if(visions.length || projects.length || tasks.length){
+      D = migrateData({ visions, projects, tasks });
+      localStorage.setItem(SK, JSON.stringify(D));
+    } else {
+      // First ever login — push local data up to Firestore
+      await fbPushAll();
+    }
+    // Load workspace meta
+    try {
+      const wsMeta = await _fbFS.doc(base + '/meta/workspace').get();
+      if(wsMeta.exists){
+        const wd = wsMeta.data();
+        if(wd.users)   WS.users   = wd.users;
+        if(wd.orgName) WS.orgName = wd.orgName;
+        saveWorkspace();
+      }
+    } catch(e){ /* meta not set yet — fine */ }
+  } catch(e){
+    console.warn('Firestore load error:', e);
+    toast('Sync load failed: ' + e.message, 'error');
+  }
+}
+
+async function fbPushAll(){
+  if(!_fbFS || !_fbUser) return;
+  const base = fbGetBase();
+  if(!base) return;
+  const all = [
+    ...D.visions.map(v  => ({ c:'visions',  d:v })),
+    ...D.projects.map(p => ({ c:'projects', d:p })),
+    ...D.tasks.map(t    => ({ c:'tasks',    d:t }))
+  ];
+  for(let i = 0; i < all.length; i += 499){
+    const batch = _fbFS.batch();
+    all.slice(i, i + 499).forEach(({ c, d }) =>
+      batch.set(_fbFS.doc(`${base}/${c}/${d.id}`), d)
+    );
+    await batch.commit();
+  }
+  try {
+    await _fbFS.doc(base + '/meta/workspace').set({ ...WS, mode: WS_MODE, updatedAt: Date.now() });
+  } catch(e){ /* ignore */ }
+  toast('☁️ Data pushed to Firebase', 'success');
+}
+
+async function fbSyncNow(){
+  if(!_fbFS || !_fbUser) return;
+  const base = fbGetBase();
+  if(!base) return;
+  try {
+    const all = [
+      ...D.visions.map(v  => ({ c:'visions',  d:v })),
+      ...D.projects.map(p => ({ c:'projects', d:p })),
+      ...D.tasks.map(t    => ({ c:'tasks',    d:t }))
+    ];
+    for(let i = 0; i < all.length || i === 0; i += 499){
+      const batch = _fbFS.batch();
+      all.slice(i, i + 499).forEach(({ c, d }) =>
+        batch.set(_fbFS.doc(`${base}/${c}/${d.id}`), d)
+      );
+      // Handle pending deletes in first batch
+      if(i === 0){
+        ['visions','projects','tasks'].forEach(col => {
+          _fbPendingDel[col].forEach(id =>
+            batch.delete(_fbFS.doc(`${base}/${col}/${id}`))
+          );
+          _fbPendingDel[col].clear();
+        });
+      }
+      await batch.commit();
+      if(i + 499 >= all.length) break;
+    }
+    // Sync workspace meta
+    await _fbFS.doc(base + '/meta/workspace').set({ ...WS, mode: WS_MODE, updatedAt: Date.now() });
+    // Update sync badge
+    const badge = document.getElementById('fb-sync-badge');
+    if(badge) badge.innerHTML = '🔥 Synced';
+  } catch(e){
+    console.warn('Firestore sync error:', e);
+    const badge = document.getElementById('fb-sync-badge');
+    if(badge) badge.innerHTML = '⚠️ Sync failed';
+  }
+}
+
+/* ── Auth UI (legacy stubs — old modal removed, replaced by login-gate) ── */
+// These functions previously drove a modal overlay (#fb-email, #fb-auth-btn, etc.)
+// that no longer exists in the DOM.  They now delegate to the full-screen gate
+// equivalents so any stale call-sites still work without throwing errors.
+function fbDoAuth()         { gateDoAuth(); }
+function fbToggleAuthMode() { gateToggleMode(); }
+async function fbForgotPassword() { await gateForgotPassword(); }
+function fbOpenLoginModal(){ /* no-op — login gate is always visible when signed out */ }
+function fbSkipLogin()      { /* no-op — login is mandatory */ }
+function fbAuthErrMsg(code){
+  return ({
+    'auth/wrong-password':       'Incorrect password.',
+    'auth/invalid-credential':   'Incorrect email or password.',
+    'auth/user-not-found':       'No account found with this email.',
+    'auth/invalid-email':        'Invalid email address.',
+    'auth/email-already-in-use': 'An account already exists with this email.',
+    'auth/weak-password':        'Password must be at least 6 characters.',
+    'auth/too-many-requests':    'Too many failed attempts. Try again later.',
+    'auth/network-request-failed': 'Network error. Check your connection.'
+  })[code] || ('Error: ' + code);
+}
+
+/* ══════════════════════════════════════
+   ONBOARDING (legacy stubs — replaced by login gate + profile wizard)
+══════════════════════════════════════ */
+function checkOnboarding(){ /* handled by fbHandleAuthChange + profile wizard */ }
+function skipOnboarding()  { /* no skip — login required */ }
+function reopenOnboarding(){ /* profile wizard handles this */ }
+function obSelectMode()    { /* legacy */ }
+function obBack()          { /* legacy */ }
+function finishOnboarding(){ /* legacy — replaced by profile wizard */ }
+function updateWorkspaceUI(){
+  const isCompany = WS_MODE === 'company';
+  // Admin Console always visible — needed to configure workspace mode
+  // Only hide user-switcher in personal mode (no team members to switch between)
+  const swWrap = document.getElementById('user-switch-wrap');
+  if(swWrap) swWrap.style.display = isCompany ? '' : 'none';
+  if(isCompany) renderUserSwitcher();
+}
+
+/* ══════════════════════════════════════
+   ADMIN CONSOLE
+══════════════════════════════════════ */
+function renderAdmin(){
+  const isCompany = WS_MODE === 'company';
+  // Use Firestore members if loaded, fallback to local WS.users
+  const members = _wsMembers.length ? _wsMembers : (WS.users||[]).map(u=>({...u, uid:u.id||u.uid}));
+  const isAdmin = !!members.find(m => m.uid===(_fbUser&&_fbUser.uid) && m.isAdmin);
+
+  const sub = document.getElementById('admin-subtitle');
+  if(sub) sub.textContent = isCompany
+    ? `${WS.orgName} · Manage team & workspace`
+    : 'Configure your workspace — use Company mode to enable team features';
+
+  // Header buttons
+  const phR = document.getElementById('admin-ph-r');
+  if(phR) phR.innerHTML = isCompany && isAdmin
+    ? `<button class="btn bp" onclick="adminGenerateInvite()">🔗 Generate Invite</button>`
+    : '';
+
+  // Show/hide company-only cards
+  const posCard = document.getElementById('admin-positions-card');
+  const invCard = document.getElementById('admin-invites-card');
+  if(posCard) posCard.style.display = isCompany ? '' : 'none';
+  if(invCard) invCard.style.display = (isCompany && isAdmin) ? '' : 'none';
+
+  // Workspace info card
+  const wsInfo = document.getElementById('admin-ws-info');
+  if(wsInfo){
+    const pill = isCompany
+      ? `<span class="workspace-pill wp-company">🏢 Company / Team</span>`
+      : `<span class="workspace-pill wp-personal">👤 Personal</span>`;
+    const adminMember = members.find(u=>u.isAdmin);
+    wsInfo.innerHTML = `
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px">
+        ${pill}<span style="font-weight:700;font-size:.88rem">${esc(isCompany ? WS.orgName : 'Personal Workspace')}</span>
+      </div>
+      ${isCompany
+        ? `<div style="font-size:.78rem;color:var(--muted)">${members.length} member${members.length!==1?'s':''} · Admin: <strong>${esc((adminMember||{}).name||'—')}</strong></div>`
+        : `<div style="font-size:.82rem;color:var(--muted);line-height:1.6">You are in <strong>Personal mode</strong>. Sign up or log in with Company setup to enable team features.</div>`
+      }`;
+  }
+
+  // Team Members list
+  const countBadge = document.getElementById('user-count-badge');
+  if(countBadge) countBadge.textContent = isCompany ? members.length + ' member' + (members.length!==1?'s':'') : '';
+
+  const usersList = document.getElementById('users-list');
+  if(usersList){
+    if(!isCompany){
+      usersList.innerHTML = `<div style="text-align:center;padding:24px;color:var(--muted)">
+        <div style="font-size:2rem;margin-bottom:8px">🏢</div>
+        <div style="font-weight:700;margin-bottom:6px">Team features require Company mode</div>
+        <div style="font-size:.8rem;line-height:1.5">Create a company workspace during sign-up to add members.</div></div>`;
+    } else if(!members.length){
+      usersList.innerHTML = `<div class="emp" style="padding:18px"><div class="empi">👥</div><div class="empt">No team members yet</div><div class="emps">Generate an invite code and share it with your team.</div></div>`;
+    } else {
+      usersList.innerHTML = members.map(m => `
+        <div class="urow">
+          <div class="urow-av" style="background:${m.avatarColor||'linear-gradient(135deg,#5B6EF5,#7C3AED)'}">${esc(m.initials||'?')}</div>
+          <div class="urow-info">
+            <div class="urow-name">${esc(m.name)}
+              ${m.isAdmin?`<span class="role-badge admin-badge">Admin</span>`:''}
+              ${_fbUser&&m.uid===_fbUser.uid?`<span class="role-badge you-badge">You</span>`:''}
+            </div>
+            <div class="urow-meta">${esc(m.email||'')} &nbsp;<span class="role-badge">${esc(m.position||m.role||'')}</span></div>
+          </div>
+          ${isAdmin && !m.isAdmin ? `<button class="bic bic-red" onclick="adminRemoveMember('${m.uid}')" title="Remove member">🗑️</button>` : ''}
+        </div>`).join('');
+    }
+  }
+
+  // Positions
+  renderAdminPositions();
+  // Invites (load from Firestore first if admin)
+  if(isCompany && isAdmin && !_wsInvites.length){
+    fbLoadInvites().then(renderAdminInvites);
+  } else {
+    renderAdminInvites();
+  }
+}
+
+async function adminRemoveMember(uid){
+  const m = _wsMembers.find(x=>x.uid===uid);
+  if(!m) return;
+  confirmAction('Remove ' + m.name + ' from the workspace?', async () => {
+    try {
+      await _fbFS.doc('workspaces/' + WS.wsId + '/members/' + uid).delete();
+      _wsMembers = _wsMembers.filter(x=>x.uid!==uid);
+      renderAdmin();
+      toast(m.name + ' removed', 'info');
+    } catch(e){ toast('Error: ' + e.message, 'error'); }
+  });
+}
+function openAddUserModal(){
+  document.getElementById('aum-title').textContent = '➕ Add Team Member';
+  document.getElementById('aum-name').value  = '';
+  document.getElementById('aum-email').value = '';
+  document.getElementById('aum-role').value  = 'Manager';
+  document.getElementById('aum-admin').value = 'false';
+  document.getElementById('aum-err').style.display = 'none';
+  document.getElementById('add-user-modal').style.display = 'flex';
+  setTimeout(()=>document.getElementById('aum-name').focus(), 60);
+}
+function closeAddUserModal(){
+  document.getElementById('add-user-modal').style.display = 'none';
+}
+function saveUser(){
+  const name    = document.getElementById('aum-name').value.trim();
+  const email   = document.getElementById('aum-email').value.trim();
+  const role    = document.getElementById('aum-role').value;
+  const isAdmin = document.getElementById('aum-admin').value === 'true';
+  const errEl   = document.getElementById('aum-err');
+  if(!name) { errEl.textContent='Name is required'; errEl.style.display=''; return; }
+  if(!email){ errEl.textContent='Email is required'; errEl.style.display=''; return; }
+  errEl.style.display = 'none';
+  const colors = [
+    'linear-gradient(135deg,#5B6EF5,#7C3AED)',
+    'linear-gradient(135deg,#10B981,#06B6D4)',
+    'linear-gradient(135deg,#F59E0B,#F97316)',
+    'linear-gradient(135deg,#EF4444,#F97316)',
+    'linear-gradient(135deg,#8B5CF6,#EC4899)',
+    'linear-gradient(135deg,#06B6D4,#3B82F6)'
+  ];
+  WS.users.push({
+    id: newId(), name, email, role, isAdmin,
+    initials: name.split(' ').map(w=>w[0]).join('').toUpperCase().slice(0,2) || '??',
+    avatarColor: colors[WS.users.length % colors.length]
+  });
+  saveWorkspace();
+  closeAddUserModal();
+  renderAdmin();
+  renderUserSwitcher();
+  toast(`✅ ${name} added to workspace`);
+}
+function deleteUser(id){
+  const u = WS.users.find(x=>x.id===id);
+  if(!u) return;
+  confirmAction(`Remove ${u.name} from the workspace?`, () => {
+    WS.users = WS.users.filter(x=>x.id!==id);
+    if(WS_CUR_USER && WS_CUR_USER.id===id){
+      WS_CUR_USER = WS.users[0] || null;
+      saveCurrentUser();
+    }
+    saveWorkspace();
+    renderAdmin();
+    renderUserSwitcher();
+    toast(`${u.name} removed`, 'info');
+  });
+}
+function openSwitchModeModal(){
+  const newMode = WS_MODE === 'company' ? 'personal' : 'company';
+  confirmAction(`Switch to ${newMode} mode? Your data stays intact.`, async () => {
+    WS_MODE = newMode;
+    localStorage.setItem(WS_MODE_KEY, WS_MODE);
+    // Persist mode change to Firestore profile so it survives next login
+    if(_fbFS && _fbUser){
+      try {
+        await _fbFS.doc('users/' + _fbUser.uid + '/profile/main').update({ wsMode: newMode });
+      } catch(e){ console.warn('Mode update in Firestore failed:', e); }
+    }
+    updateWorkspaceUI();
+    renderAdmin();
+    renderSettings();
+    toast(`Switched to ${newMode} mode`, 'info');
+  });
+}
+
+/* ══════════════════════════════════════
+   USER SWITCHER (sidebar)
+   In Firebase mode this widget is READ-ONLY — it shows who is on the team
+   and highlights the currently authenticated user (_fbUser).
+   WS.users is kept as a fallback if Firestore members haven't loaded yet.
+══════════════════════════════════════ */
+function renderUserSwitcher(){
+  if(WS_MODE !== 'company') return;
+  // Prefer Firestore members; fall back to local WS.users cache
+  const members = _wsMembers.length
+    ? _wsMembers
+    : (WS.users||[]).map(u => ({ ...u, uid: u.uid || u.id }));
+  // The "active" user is always the authenticated Firebase user
+  const activeUid = _fbUser?.uid || WS_CUR_USER?.uid || WS_CUR_USER?.id || null;
+  const cur = members.find(m => m.uid === activeUid) || members[0] || null;
+
+  const av = document.getElementById('usr-sw-av');
+  const nm = document.getElementById('usr-sw-name');
+  if(av && cur){ av.style.background = cur.avatarColor||'linear-gradient(135deg,#5B6EF5,#7C3AED)'; av.textContent = cur.initials||'?'; }
+  if(nm && cur){ nm.textContent = cur.name; }
+
+  const list = document.getElementById('usr-sw-list');
+  if(!list) return;
+  if(!members.length){
+    list.innerHTML = '<div style="padding:10px 12px;font-size:.78rem;color:var(--muted)">No team members yet.</div>';
+    return;
+  }
+  list.innerHTML = members.map(u => {
+    const isMe = u.uid === activeUid;
+    return `<div class="user-sw-item ${isMe?'active':''}" style="cursor:default">
+      <div class="user-av-sm" style="background:${u.avatarColor||'linear-gradient(135deg,#5B6EF5,#7C3AED)'}">${esc(u.initials||'?')}</div>
+      <span>${esc(u.name)}</span>
+      <span style="margin-left:auto;display:flex;gap:4px">
+        ${u.isAdmin?`<span class="role-badge admin-badge" style="font-size:.6rem;padding:1px 5px">Admin</span>`:''}
+        ${isMe?`<span class="role-badge you-badge" style="font-size:.6rem;padding:1px 5px">You</span>`:''}
+      </span>
+    </div>`;
+  }).join('');
+}
+function toggleUserSwitcher(){
+  document.getElementById('usr-sw-list').classList.toggle('open');
+}
+/** switchUser is kept for backward compat but is a no-op in Firebase mode —
+ *  identity is always determined by _fbUser (Firebase Auth). */
+function switchUser(id){
+  // In Firebase mode the logged-in user cannot be switched client-side.
+  // We simply close the panel and do nothing else.
+  document.getElementById('usr-sw-list')?.classList.remove('open');
+}
+
+// Firebase config is hardcoded in FB_CONFIG — no modal needed
+
+/* ══════════════════════════════════════
    BOOT
 ══════════════════════════════════════ */
 window.addEventListener('load', () => {
-  initQuill();
-  initTheme();
-  updateHeaderProfile();
-  renderAll();
-  renderProfilePage();
-  initNotifications();
+  const safe = (fn, name) => { try { fn(); } catch(e) { console.warn(name+' failed:', e); } };
+  safe(initQuill,           'initQuill');
+  safe(initTheme,           'initTheme');
+  safe(updateHeaderProfile, 'updateHeaderProfile');
+  safe(renderAll,           'renderAll');
+  safe(renderProfilePage,   'renderProfilePage');
+  safe(initNotifications,   'initNotifications');
+  safe(fbInit,              'fbInit'); // login gate handles all onboarding
 });
 
 
